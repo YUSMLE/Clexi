@@ -3,6 +3,9 @@
     <string name="app_name">Clexi</string>
     <string name="action_settings">Settings</string>
 
+    <!-- Activity Titles -->
+    <string name="title_activity_search_for_login">Search For Login</string>
+
     <!-- Controlls -->
     <string name="positive">OK</string>
     <string name="negative">Cancel</string>

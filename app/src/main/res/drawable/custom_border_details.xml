@@ -12,6 +12,7 @@
         android:right="-2dp">
 
         <shape>
+
             <solid android:color="@android:color/transparent"/>
 
             <stroke

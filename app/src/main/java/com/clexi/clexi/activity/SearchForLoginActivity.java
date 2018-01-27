@@ -2,27 +2,29 @@ package com.clexi.clexi.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
+import android.speech.RecognizerIntent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.clexi.clexi.R;
-import com.clexi.clexi.dialog.FlyingFOB;
 import com.clexi.clexi.model.access.DbManager;
 import com.clexi.clexi.model.object.Account;
+import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
-public class MainActivity extends BaseActivity
+public class SearchForLoginActivity extends BaseActivity
 {
 
     public static final String TAG = MainActivity.class.getSimpleName();
@@ -38,8 +40,8 @@ public class MainActivity extends BaseActivity
      * VIEWS
      ***************************************************/
 
-    @BindView(R.id.fab)         FloatingActionButton mFab;
-    @BindView(R.id.accountList) RecyclerView         mAccountList;
+    @BindView(R.id.searchView)  MaterialSearchView mSearchView;
+    @BindView(R.id.accountList) RecyclerView       mAccountList;
 
     /****************************************************
      * ACTIVITY OVERRIDES
@@ -49,7 +51,7 @@ public class MainActivity extends BaseActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_search_for_login);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -66,16 +68,17 @@ public class MainActivity extends BaseActivity
 
         // Bind Views
         bindViews();
-
-        // Test with simulator
-        startService(new Intent(MainActivity.this, FlyingFOB.class));
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.search_for_login_menu, menu);
+
+        // Set MaterialSearchView
+        MenuItem item = menu.findItem(R.id.action_search);
+        mSearchView.setMenuItem(item);
 
         return true;
     }
@@ -148,7 +151,14 @@ public class MainActivity extends BaseActivity
     @Override
     public void onBackPressed()
     {
-        super.onBackPressed();
+        if (mSearchView.isSearchOpen())
+        {
+            mSearchView.closeSearch();
+        }
+        else
+        {
+            super.onBackPressed();
+        }
     }
 
     @Override
@@ -166,6 +176,21 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        if (requestCode == MaterialSearchView.REQUEST_VOICE && resultCode == RESULT_OK)
+        {
+            ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
+            if (matches != null && matches.size() > 0)
+            {
+                String searchWrd = matches.get(0);
+                if (!TextUtils.isEmpty(searchWrd))
+                {
+                    mSearchView.setQuery(searchWrd, false);
+                }
+            }
+
+            return;
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -184,20 +209,53 @@ public class MainActivity extends BaseActivity
         // Bind views with ButterKnife
         ButterKnife.bind(this);
 
-        mFab.setOnClickListener(new View.OnClickListener()
+        /* Data Binding */
+
+        /* Material Search View */
+
+        // Set the listeners
+        mSearchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener()
         {
             @Override
-            public void onClick(View view)
+            public boolean onQueryTextSubmit(String query)
             {
-                // TEST
-                Intent i = new Intent(MainActivity.this, SearchForLoginActivity.class);
-                startActivity(i);
+                //Do some magic
+                return false;
+            }
+
+            @Override
+            public boolean onQueryTextChange(String newText)
+            {
+                //Do some magic
+                return false;
+            }
+        });
+        mSearchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener()
+        {
+            @Override
+            public void onSearchViewShown()
+            {
+                //Do some magic
+            }
+
+            @Override
+            public void onSearchViewClosed()
+            {
+                //Do some magic
             }
         });
 
-        // Data Binding
+        // Allow/Disable VoiceSearch for MaterialSearchView
+        mSearchView.setVoiceSearch(true);
+
+        // Add suggestions to MaterialSearchView
+        mSearchView.setSuggestions(getResources().getStringArray(R.array.query_suggestions));
+
+        // Add custom cursor to MaterialSearchView
+        mSearchView.setCursorDrawable(R.drawable.custom_cursor);
 
         /* List of Accounts */
+
         mAccounts = DbManager.listAllAccounts();
 
         AccountsAdapter.Callback callback = new AccountsAdapter.Callback()
@@ -209,10 +267,10 @@ public class MainActivity extends BaseActivity
             }
         };
 
-        mAccountsAdapter = new AccountsAdapter(MainActivity.this, mAccounts, callback);
+        mAccountsAdapter = new AccountsAdapter(SearchForLoginActivity.this, mAccounts, callback);
         mAccountList.setAdapter(mAccountsAdapter);
 
-        LinearLayoutManager verticalLayoutManagaer = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
+        LinearLayoutManager verticalLayoutManagaer = new LinearLayoutManager(SearchForLoginActivity.this, LinearLayoutManager.VERTICAL, false);
         mAccountList.setLayoutManager(verticalLayoutManagaer);
     }
 

@@ -1,0 +1,28 @@
+<resources>
+
+    <!-- Add suggestions to MaterialSearchView -->
+    <string-array name="query_suggestions">
+
+        <!-- Socials -->
+        <item>Google</item>
+        <item>Google+</item>
+        <item>Gmail</item>
+        <item>Yahoo</item>
+        <item>Facebook</item>
+        <item>Instagram</item>
+        <item>Telegram</item>
+        <item>Microsoft</item>
+
+        <!-- Banks -->
+        <item>Melli</item>
+        <item>Mellat</item>
+        <item>Saderat</item>
+        <item>Tejarat</item>
+        <item>Sepah</item>
+        <item>Keshavarzi</item>
+        <item>Pasargad</item>
+        <item>Saman</item>
+        <item>Shahr</item>
+        <item>Ayandeh</item>
+    </string-array>
+</resources>
