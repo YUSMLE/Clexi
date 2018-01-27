@@ -1,4 +1,5 @@
 <resources>
+    <!-- General -->
     <string name="app_name">Clexi</string>
     <string name="action_settings">Settings</string>
 
@@ -17,6 +18,24 @@
 
     <!-- Titles -->
     <string name="matching_logins">Matching Logins</string>
+
+    <!-- Labels -->
+    <string name="app">App</string>
+    <string name="url">URL</string>
+    <string name="username">Username</string>
+    <string name="password">Password</string>
+    <string name="note">Note</string>
+    <string name="generation_type">Generation type</string>
+    <string name="normal">Normal</string>
+    <string name="strong">Strong</string>
+    <string name="custom">Custom</string>
+    <string name="length">Length</string>
+    <string name="other_options">Other options</string>
+    <string name="use_characters">Use characters</string>
+    <string name="use_digits">Use digits</string>
+    <string name="begin_with_character">Begin with character</string>
+    <string name="use_at_least_one_upercase_character">Use at least one upercase character</string>
+    <string name="use_ambiguous_characters">Use ambiguous characters</string>
 
     <!-- Messages -->
     <string name="accessibility_service_description">This is a Accessibility Service description.</string>

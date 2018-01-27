@@ -44,7 +44,7 @@ public class FlyingFOB extends Service
 
         mFob = new ImageView(this);
 
-        mFob.setImageResource(R.mipmap.fob);
+        mFob.setImageResource(R.mipmap.ic_fob);
 
         final WindowManager.LayoutParams params = new WindowManager.LayoutParams(
                 //WindowManager.LayoutParams.WRAP_CONTENT,

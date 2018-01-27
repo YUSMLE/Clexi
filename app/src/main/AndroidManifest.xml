@@ -6,7 +6,7 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
-        android:name="com.clexi.clexi.app.App"
+        android:name=".app.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -25,7 +25,7 @@
         </activity>
 
         <service
-            android:name="com.clexi.clexi.accessibility.AccessibilityManager"
+            android:name=".accessibility.AccessibilityManager"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService"/>
@@ -35,14 +35,21 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_resource"/>
         </service>
-
         <service
-            android:name="com.clexi.clexi.dialog.FlyingFOB"
+            android:name=".dialog.FlyingFOB"
+            android:exported="true"/>
+        <service
+            android:name=".dialog.AccountsDialog"
             android:exported="true"/>
 
-        <service
-            android:name="com.clexi.clexi.dialog.AccountsDialog"
-            android:exported="true"/>
+        <activity android:name=".activity.AccountDetailsActivity">
+        </activity>
+        <activity android:name=".activity.AddAccountActivity">
+        </activity>
+        <activity android:name=".activity.AppChooserActivity">
+        </activity>
+        <activity android:name=".activity.PasswordGeneratorActivity">
+        </activity>
     </application>
 
 </manifest>

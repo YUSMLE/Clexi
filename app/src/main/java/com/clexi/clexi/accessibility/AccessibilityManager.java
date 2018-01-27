@@ -458,6 +458,7 @@ public class AccessibilityManager extends AccessibilityService
                         // TEST
                         setField(mUsernameField, account.getUsername());
                         setField(mPasswordField, account.getPassword());
+                        Log.e(TAG, "Text of password field: " + Utils.getTextOfNode(mPasswordField));
                     }
                     else if (mUsernameField != null)
                     {
