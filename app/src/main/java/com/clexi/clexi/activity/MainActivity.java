@@ -3,6 +3,9 @@ package com.clexi.clexi.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.v7.app.ActionBar;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -11,6 +14,13 @@ import android.view.View;
 
 import com.clexi.clexi.R;
 import com.clexi.clexi.dialog.FlyingFOB;
+import com.clexi.clexi.model.access.DbManager;
+import com.clexi.clexi.model.object.Account;
+
+import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MainActivity extends BaseActivity
 {
@@ -21,13 +31,15 @@ public class MainActivity extends BaseActivity
      * VARIABLES
      ***************************************************/
 
-    // Nothing
+    private List<Account>   mAccounts;
+    private AccountsAdapter mAccountsAdapter;
 
     /****************************************************
      * VIEWS
      ***************************************************/
 
-    private FloatingActionButton fab;
+    @BindView(R.id.fab)         FloatingActionButton mFab;
+    @BindView(R.id.accountList) RecyclerView         mAccountList;
 
     /****************************************************
      * ACTIVITY OVERRIDES
@@ -40,6 +52,17 @@ public class MainActivity extends BaseActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
+        // Set ActionBar
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setDisplayHomeAsUpEnabled(false);
+
+        // Add some dummy data :)
+        DbManager.addMockData();
+
+        // Intent Data
+        pullIntentData();
 
         // Bind Views
         bindViews();
@@ -158,8 +181,10 @@ public class MainActivity extends BaseActivity
 
     private void bindViews()
     {
-        fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener()
+        // Bind views with ButterKnife
+        ButterKnife.bind(this);
+
+        mFab.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
@@ -167,13 +192,36 @@ public class MainActivity extends BaseActivity
                 // Nothing
             }
         });
+
+        // Data Binding
+
+        /* List of Accounts */
+        mAccounts = DbManager.listAllAccounts();
+
+        AccountsAdapter.Callback callback = new AccountsAdapter.Callback()
+        {
+            @Override
+            public void onSelect(Account item)
+            {
+                // Nothing
+            }
+        };
+
+        mAccountsAdapter = new AccountsAdapter(MainActivity.this, mAccounts, callback);
+        mAccountList.setAdapter(mAccountsAdapter);
+
+        LinearLayoutManager verticalLayoutManagaer = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
+        mAccountList.setLayoutManager(verticalLayoutManagaer);
     }
 
     /****************************************************
      * FUNCTIONALITY
      ***************************************************/
 
-    // Nothing
+    private void pullIntentData()
+    {
+        // Nothing
+    }
 
     /****************************************************
      * INNER CLASSES

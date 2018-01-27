@@ -13,6 +13,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
@@ -22,6 +23,18 @@
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
+        </activity>
+
+        <activity android:name=".activity.AccountDetailsActivity">
+        </activity>
+
+        <activity android:name=".activity.AddAccountActivity">
+        </activity>
+
+        <activity android:name=".activity.AppChooserActivity">
+        </activity>
+
+        <activity android:name=".activity.PasswordGeneratorActivity">
         </activity>
 
         <service
@@ -35,21 +48,27 @@
                 android:name="android.accessibilityservice"
                 android:resource="@xml/accessibility_service_resource"/>
         </service>
+
         <service
             android:name=".dialog.FlyingFOB"
             android:exported="true"/>
+
         <service
             android:name=".dialog.AccountsDialog"
             android:exported="true"/>
 
-        <activity android:name=".activity.AccountDetailsActivity">
-        </activity>
-        <activity android:name=".activity.AddAccountActivity">
-        </activity>
-        <activity android:name=".activity.AppChooserActivity">
-        </activity>
-        <activity android:name=".activity.PasswordGeneratorActivity">
-        </activity>
+        <meta-data
+            android:name="DATABASE"
+            android:value="clexi_sugar_v01.db"/>
+        <meta-data
+            android:name="VERSION"
+            android:value="1"/>
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true"/>
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="com.clexi.clexi.model.object"/>
     </application>
 
 </manifest>
