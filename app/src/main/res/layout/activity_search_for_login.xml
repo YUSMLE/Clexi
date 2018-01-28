@@ -28,10 +28,11 @@
                 android:background="?attr/colorPrimary"
                 app:popupTheme="@style/AppTheme.PopupOverlay"/>
 
-            <com.miguelcatalan.materialsearchview.MaterialSearchView
+            <br.com.mauker.materialsearchview.MaterialSearchView
                 android:id="@+id/searchView"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
+                android:layout_height="match_parent"
+                style="@style/MaterialSearchViewStyle"/>
         </FrameLayout>
     </android.support.design.widget.AppBarLayout>
 

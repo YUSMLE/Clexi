@@ -8,19 +8,21 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 
 import com.clexi.clexi.R;
 import com.clexi.clexi.model.access.DbManager;
 import com.clexi.clexi.model.object.Account;
-import com.miguelcatalan.materialsearchview.MaterialSearchView;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import br.com.mauker.materialsearchview.MaterialSearchView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -40,6 +42,7 @@ public class SearchForLoginActivity extends BaseActivity
      * VIEWS
      ***************************************************/
 
+    // MaterialSearchView; init
     @BindView(R.id.searchView)  MaterialSearchView mSearchView;
     @BindView(R.id.accountList) RecyclerView       mAccountList;
 
@@ -76,10 +79,6 @@ public class SearchForLoginActivity extends BaseActivity
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.search_for_login_menu, menu);
 
-        // Set MaterialSearchView
-        MenuItem item = menu.findItem(R.id.action_search);
-        mSearchView.setMenuItem(item);
-
         return true;
     }
 
@@ -94,6 +93,13 @@ public class SearchForLoginActivity extends BaseActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings)
         {
+            return true;
+        }
+        else if (id == R.id.action_search)
+        {
+            // MaterialSearchView; open the search view on the menu item click.
+            mSearchView.openSearch();
+
             return true;
         }
 
@@ -122,12 +128,20 @@ public class SearchForLoginActivity extends BaseActivity
     protected void onResume()
     {
         super.onResume();
+
+        // MaterialSearchView; manage suggestions
+        mSearchView.activityResumed();
+        String[] arr = getResources().getStringArray(R.array.query_suggestions);
+        mSearchView.addSuggestions(arr);
     }
 
     @Override
     protected void onPause()
     {
         super.onPause();
+
+        // MaterialSearchView; manage suggestions
+        mSearchView.clearSuggestions();
     }
 
     @Override
@@ -151,8 +165,10 @@ public class SearchForLoginActivity extends BaseActivity
     @Override
     public void onBackPressed()
     {
-        if (mSearchView.isSearchOpen())
+        // MaterialSearchView; to close the search view using the back button
+        if (mSearchView.isOpen())
         {
+            // Close the search on the back button press.
             mSearchView.closeSearch();
         }
         else
@@ -176,6 +192,7 @@ public class SearchForLoginActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        // MaterialSearchView; search via voice
         if (requestCode == MaterialSearchView.REQUEST_VOICE && resultCode == RESULT_OK)
         {
             ArrayList<String> matches = data.getStringArrayListExtra(RecognizerIntent.EXTRA_RESULTS);
@@ -211,48 +228,64 @@ public class SearchForLoginActivity extends BaseActivity
 
         /* Data Binding */
 
-        /* Material Search View */
+        // MaterialSearchView; If you want to submit the query from the selected suggestion
+        mSearchView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+            {
+                // Do something when the suggestion list is clicked.
+                String suggestion = mSearchView.getSuggestionAtPosition(position);
 
-        // Set the listeners
+                mSearchView.setQuery(suggestion, true);
+            }
+        });
+        // MaterialSearchView; handle either QueryTextChange or QueryTextSubmit events inside the MaterialSearchView
         mSearchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener()
         {
             @Override
             public boolean onQueryTextSubmit(String query)
             {
-                //Do some magic
+                // Do some magic
                 return false;
             }
 
             @Override
             public boolean onQueryTextChange(String newText)
             {
-                //Do some magic
+                // Do some magic
                 return false;
             }
         });
-        mSearchView.setOnSearchViewListener(new MaterialSearchView.SearchViewListener()
+        // MaterialSearchView; handle the open or close events of the MaterialSearchView
+        mSearchView.setSearchViewListener(new MaterialSearchView.SearchViewListener()
         {
             @Override
-            public void onSearchViewShown()
+            public void onSearchViewOpened()
             {
-                //Do some magic
+                // Do something once the view is open.
             }
 
             @Override
             public void onSearchViewClosed()
             {
-                //Do some magic
+                // Do something once the view is closed.
             }
         });
-
-        // Allow/Disable VoiceSearch for MaterialSearchView
-        mSearchView.setVoiceSearch(true);
-
-        // Add suggestions to MaterialSearchView
-        mSearchView.setSuggestions(getResources().getStringArray(R.array.query_suggestions));
-
-        // Add custom cursor to MaterialSearchView
-        mSearchView.setCursorDrawable(R.drawable.custom_cursor);
+        // MaterialSearchView; handle click event on voice icon
+        mSearchView.setOnVoiceClickedListener(new MaterialSearchView.OnVoiceClickedListener()
+        {
+            @Override
+            public void onVoiceClicked()
+            {
+                Log.d(TAG, "Try to voice search...");
+            }
+        });
+        // MaterialSearchView; provide search suggestions
+        mSearchView.addSuggestions(getResources().getStringArray(R.array.query_suggestions));
+        // MaterialSearchView; customize view
+        mSearchView.setTintAlpha(200);
+        mSearchView.adjustTintAlpha(0.8f);
 
         /* List of Accounts */
 
