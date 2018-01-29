@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.clexi.clexi.activity.MainActivity;
 import com.clexi.clexi.app.Consts;
 import com.clexi.clexi.dialog.AccountsDialog;
 import com.clexi.clexi.helper.Broadcaster;
@@ -370,7 +371,12 @@ public class AccessibilityManager extends AccessibilityService
                     // TEST
                     Log.d(TAG, "Username value: " + mUsername);
 
-                    ArrayList<Account> matchingLogins = mLoginManager.getMatchingLoginssWith(mActiveApp, mIsBrowser, mCurrentUrl, mUsername);
+                    ArrayList<Account> matchingLogins = (ArrayList) mLoginManager.getMatchingLoginsWith(
+                            mActiveApp,
+                            mIsBrowser,
+                            mCurrentUrl,
+                            mUsername
+                    );
 
                     if (matchingLogins == null || matchingLogins.size() == 0)
                     {
@@ -504,7 +510,14 @@ public class AccessibilityManager extends AccessibilityService
 
                     /*Open the main UI to manage the accounts*/
 
-                    // todo again...
+                    // todo later...
+
+                    Intent i = new Intent(AccessibilityManager.this, MainActivity.class);
+                    // Calling startActivity() from outside of an Activity context
+                    // requires the FLAG_ACTIVITY_NEW_TASK flag.
+                    // Is this really what you want? :)
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
                 }
                 else
                 {
