@@ -13,6 +13,7 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.clexi.clexi.R;
+import com.clexi.clexi.app.Consts;
 import com.clexi.clexi.dialog.FlyingFOB;
 import com.clexi.clexi.model.access.DbManager;
 import com.clexi.clexi.model.object.Account;
@@ -166,6 +167,21 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        if (requestCode == Consts.REQUEST_ADD_EDIT_DELETE_ACCOUNT)
+        {
+            // Update list
+            if (mAccountsAdapter != null)
+            {
+                mAccounts = DbManager.listAllAccounts();
+
+                // Update list with dataset to show
+                // todo later...
+
+                mAccountsAdapter.updateList(mAccounts);
+                mAccountsAdapter.notifyDataSetChanged();
+            }
+        }
+
         super.onActivityResult(requestCode, resultCode, data);
     }
 
@@ -189,9 +205,8 @@ public class MainActivity extends BaseActivity
             @Override
             public void onClick(View view)
             {
-                // TEST
-                Intent i = new Intent(MainActivity.this, SearchForLoginActivity.class);
-                startActivity(i);
+                // Add new empty account
+                goToAddAccount();
             }
         });
 
@@ -214,6 +229,14 @@ public class MainActivity extends BaseActivity
 
         LinearLayoutManager verticalLayoutManagaer = new LinearLayoutManager(MainActivity.this, LinearLayoutManager.VERTICAL, false);
         mAccountList.setLayoutManager(verticalLayoutManagaer);
+    }
+
+    private void goToAddAccount()
+    {
+        Intent intent = new Intent(MainActivity.this, AddAccountActivity.class);
+        intent.putExtra(Consts.ACTIVITY_TYPE, AddAccountActivity.ACTIVITY_TYPE_ADD);
+        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        startActivityForResult(intent, Consts.REQUEST_ADD_EDIT_DELETE_ACCOUNT);
     }
 
     /****************************************************

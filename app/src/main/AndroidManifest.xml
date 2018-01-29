@@ -31,16 +31,24 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <activity android:name=".activity.AccountDetailsActivity">
+        <activity android:name=".activity.AccountDetailsActivity"
+                  android:label="@string/title_activity_account_details"
+                  android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <activity android:name=".activity.AddAccountActivity">
+        <activity android:name=".activity.AddAccountActivity"
+                  android:label="@string/title_activity_add_account"
+                  android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <activity android:name=".activity.AppChooserActivity">
+        <activity android:name=".activity.AppChooserActivity"
+                  android:label="@string/title_activity_app_chooser"
+                  android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <activity android:name=".activity.PasswordGeneratorActivity">
+        <activity android:name=".activity.PasswordGeneratorActivity"
+                  android:label="@string/title_activity_password_generator"
+                  android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
         <service

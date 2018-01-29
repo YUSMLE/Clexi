@@ -4,7 +4,13 @@
     <string name="action_settings">Settings</string>
 
     <!-- Activity Titles -->
-    <string name="title_activity_search_for_login">Search For Login</string>
+    <string name="title_activity_main">@string/app_name</string>
+    <string name="title_activity_search_for_login">Search Account</string>
+    <string name="title_activity_account_details">Account Details</string>
+    <string name="title_activity_add_account">Add Account</string>
+    <string name="title_activity_edit_account">Edit Account</string>
+    <string name="title_activity_app_chooser">Choose Application</string>
+    <string name="title_activity_password_generator">Generate Password</string>
 
     <!-- Controlls -->
     <string name="positive">OK</string>
