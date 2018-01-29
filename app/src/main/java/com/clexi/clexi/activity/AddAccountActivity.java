@@ -122,7 +122,7 @@ public class AddAccountActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.menu_add_account, menu);
 
         return true;
     }
@@ -634,7 +634,7 @@ public class AddAccountActivity extends BaseActivity
         if (mActivityType.equals(ACTIVITY_TYPE_EDIT))
         {
             // So, I expect to have an account id
-            long accountId = intent.getIntExtra(Consts.ACCOUNT_ID, 0);
+            long accountId = intent.getLongExtra(Consts.ACCOUNT_ID, 0);
 
             if (accountId != 0)
             {

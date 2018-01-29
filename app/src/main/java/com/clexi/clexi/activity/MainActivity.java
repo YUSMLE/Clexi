@@ -15,9 +15,13 @@ import android.view.View;
 
 import com.clexi.clexi.R;
 import com.clexi.clexi.app.Consts;
+import com.clexi.clexi.dialog.ConfirmDialog;
 import com.clexi.clexi.dialog.FlyingFOB;
 import com.clexi.clexi.model.access.DbManager;
 import com.clexi.clexi.model.object.Account;
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
+import com.github.rubensousa.bottomsheetbuilder.BottomSheetMenuDialog;
+import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
 
 import java.util.List;
 
@@ -223,7 +227,7 @@ public class MainActivity extends BaseActivity
             @Override
             public void onSelect(Account item)
             {
-                // Nothing
+                createBottomSheetMenuDialog(item);
             }
         };
 
@@ -253,6 +257,60 @@ public class MainActivity extends BaseActivity
         // So, I commented it for now.
         //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         startActivityForResult(intent, Consts.REQUEST_ADD_EDIT_DELETE_ACCOUNT);
+    }
+
+    private void createBottomSheetMenuDialog(final Account account)
+    {
+        BottomSheetMenuDialog dialog = new BottomSheetBuilder(this, R.style.AppTheme_BottomSheetDialog)
+                .setMode(BottomSheetBuilder.MODE_LIST)
+                .setMenu(R.menu.menu_account)
+                .setItemClickListener(new BottomSheetItemClickListener()
+                {
+                    @Override
+                    public void onBottomSheetItemClick(final MenuItem item)
+                    {
+                        if (item.getItemId() == R.id.menu_details)
+                        {
+                            // Go to AccountDetailsActivity
+                            // todo later...
+                        }
+                        else if (item.getItemId() == R.id.menu_edit)
+                        {
+                            // Go to AddAccountActivity for edit
+                            goToEditAccount(account.getId());
+                        }
+                        else if (item.getItemId() == R.id.menu_delete)
+                        {
+                            new ConfirmDialog().setListener(new ConfirmDialog.DialogListener()
+                            {
+                                @Override
+                                public void onPositiveButtonClicked()
+                                {
+                                    // OK, delete the Account
+                                    DbManager.deleteAccount(account);
+                                    mAccounts.remove(account);
+
+                                    // Update list with dataset to show
+                                    // todo later...
+
+                                    mAccountsAdapter.updateList(mAccounts);
+                                    mAccountsAdapter.notifyDataSetChanged();
+                                }
+
+                                @Override
+                                public void onNegativeButtonClicked()
+                                {
+                                    // Nothing
+                                }
+                            })
+                                    .setMessage(String.format(getString(R.string.confirm_delete_account), account.getTitle()))
+                                    .show(getFragmentManager(), "");
+                        }
+                    }
+                })
+                .createDialog();
+
+        dialog.show();
     }
 
     /****************************************************

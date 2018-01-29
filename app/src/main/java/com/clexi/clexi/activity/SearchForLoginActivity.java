@@ -77,7 +77,7 @@ public class SearchForLoginActivity extends BaseActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.search_for_login_menu, menu);
+        getMenuInflater().inflate(R.menu.menu_search_for_login, menu);
 
         return true;
     }
