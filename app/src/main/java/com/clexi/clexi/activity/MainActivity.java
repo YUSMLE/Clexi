@@ -7,6 +7,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -167,6 +168,8 @@ public class MainActivity extends BaseActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        Log.d(TAG, "onActivityResult");
+
         if (requestCode == Consts.REQUEST_ADD_EDIT_DELETE_ACCOUNT)
         {
             // Update list
@@ -235,7 +238,20 @@ public class MainActivity extends BaseActivity
     {
         Intent intent = new Intent(MainActivity.this, AddAccountActivity.class);
         intent.putExtra(Consts.ACTIVITY_TYPE, AddAccountActivity.ACTIVITY_TYPE_ADD);
-        intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        // With this below code, the second activity return result immediatelly!
+        // So, I commented it for now.
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        startActivityForResult(intent, Consts.REQUEST_ADD_EDIT_DELETE_ACCOUNT);
+    }
+
+    private void goToEditAccount(long accountId)
+    {
+        Intent intent = new Intent(MainActivity.this, AddAccountActivity.class);
+        intent.putExtra(Consts.ACTIVITY_TYPE, AddAccountActivity.ACTIVITY_TYPE_EDIT);
+        intent.putExtra(Consts.ACCOUNT_ID, accountId);
+        // With this below code, the second activity return result immediatelly!
+        // So, I commented it for now.
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         startActivityForResult(intent, Consts.REQUEST_ADD_EDIT_DELETE_ACCOUNT);
     }
 

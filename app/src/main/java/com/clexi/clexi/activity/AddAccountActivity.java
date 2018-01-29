@@ -1,5 +1,6 @@
 package com.clexi.clexi.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
@@ -349,6 +350,10 @@ public class AddAccountActivity extends BaseActivity
                     );
 
                     DbManager.createAccount(mAccount);
+
+                    // Finish activity if saving item (create/update) is done.
+                    setResult(Activity.RESULT_OK);
+                    finish();
                 }
                 else if (mActivityType.equals(ACTIVITY_TYPE_EDIT))
                 {
@@ -361,6 +366,10 @@ public class AddAccountActivity extends BaseActivity
                     mAccount.setNote(note.getText().toString());
 
                     DbManager.updateAccount(mAccount);
+
+                    // Finish activity if saving item (create/update) is done.
+                    setResult(Activity.RESULT_OK);
+                    finish();
                 }
                 else if (mActivityType.equals(ACTIVITY_TYPE_ADD_FOR_LOGIN))
                 {
@@ -378,10 +387,11 @@ public class AddAccountActivity extends BaseActivity
 
                     // Cache it for login
                     // todo later...
-                }
 
-                // Finish activity if saving item (create/update) is done.
-                finish();
+                    // Finish activity if saving item (create/update) is done.
+                    setResult(Activity.RESULT_OK);
+                    finish();
+                }
             }
         });
 
