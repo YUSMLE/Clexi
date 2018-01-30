@@ -17,7 +17,9 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.clexi.clexi.R;
+import com.clexi.clexi.activity.AddAccountActivity;
 import com.clexi.clexi.activity.MainActivity;
+import com.clexi.clexi.activity.SearchForLoginActivity;
 import com.clexi.clexi.app.Consts;
 import com.clexi.clexi.helper.Broadcaster;
 import com.clexi.clexi.helper.PackageManagerHelper;
@@ -173,8 +175,7 @@ public class AccountsDialog extends Service
             @Override
             public void onClick(View v)
             {
-                /*Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                i.putExtra(Consts.MODE, Consts.ACTION_SEARCH_FOR_LOGIN);
+                Intent i = new Intent(getApplicationContext(), SearchForLoginActivity.class);
 
                 i.putExtra(Consts.ACTIVE_APP, mActiveApp);
                 i.putExtra(Consts.IS_BROWSER, mIsBrowser);
@@ -183,21 +184,6 @@ public class AccountsDialog extends Service
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                 startActivity(i);
 
-                destroyService();*/
-
-                // TEST
-                Broadcaster.broadcast(
-                        getApplicationContext(),
-                        Consts.ACTION_LOGIN_FIRE,
-                        new Account(
-                                "Found Account",
-                                "com.unknown",
-                                "unknown.com",
-                                "username_me",
-                                "password_me",
-                                "note_me"
-                        )
-                );
                 destroyService();
             }
         });
@@ -209,8 +195,8 @@ public class AccountsDialog extends Service
             @Override
             public void onClick(View v)
             {
-                /*Intent i = new Intent(getApplicationContext(), MainActivity.class);
-                i.putExtra(Consts.MODE, Consts.ACTION_NEW_FOR_LOGIN);
+                Intent i = new Intent(getApplicationContext(), AddAccountActivity.class);
+                i.putExtra(Consts.ACTIVITY_TYPE, AddAccountActivity.ACTIVITY_TYPE_ADD_FOR_LOGIN);
 
                 i.putExtra(Consts.ACTIVE_APP, mActiveApp);
                 i.putExtra(Consts.IS_BROWSER, mIsBrowser);
@@ -219,21 +205,6 @@ public class AccountsDialog extends Service
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
                 startActivity(i);
 
-                destroyService();*/
-
-                // TEST
-                Broadcaster.broadcast(
-                        getApplicationContext(),
-                        Consts.ACTION_LOGIN_FIRE,
-                        new Account(
-                                "New Account",
-                                "com.unknown",
-                                "unknown.com",
-                                "username_me",
-                                "password_me",
-                                "note_me"
-                        )
-                );
                 destroyService();
             }
         });

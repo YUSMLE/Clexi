@@ -1,13 +1,15 @@
 package com.clexi.clexi.app;
 
-import android.app.Application;
 import android.content.Context;
+
+import com.clexi.clexi.model.access.DbManager;
+import com.orm.SugarApp;
 
 /**
  * Created by Yousef on 2/27/2017.
  */
 
-public class App extends Application
+public class App extends SugarApp
 {
 
     private static App mInstance;
@@ -20,7 +22,7 @@ public class App extends Application
         mInstance = this;
 
         // Init Database
-        // todo later...
+        DbManager.startSugar(getApplicationContext());
 
         // Set Context for BluetoothLE Framework
         // todo later...

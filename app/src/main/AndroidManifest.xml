@@ -6,13 +6,14 @@
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
     <application
-        android:name="com.clexi.clexi.app.App"
+        android:name=".app.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
         <activity
             android:name=".activity.MainActivity"
             android:label="@string/app_name"
@@ -24,8 +25,34 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".activity.SearchForLoginActivity"
+            android:label="@string/title_activity_search_for_login"
+            android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity android:name=".activity.AccountDetailsActivity"
+                  android:label="@string/title_activity_account_details"
+                  android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity android:name=".activity.AddAccountActivity"
+                  android:label="@string/title_activity_add_account"
+                  android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity android:name=".activity.AppChooserActivity"
+                  android:label="@string/title_activity_app_chooser"
+                  android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
+        <activity android:name=".activity.PasswordGeneratorActivity"
+                  android:label="@string/title_activity_password_generator"
+                  android:theme="@style/AppTheme.NoActionBar">
+        </activity>
+
         <service
-            android:name="com.clexi.clexi.accessibility.AccessibilityManager"
+            android:name=".accessibility.AccessibilityManager"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService"/>
@@ -37,12 +64,32 @@
         </service>
 
         <service
-            android:name="com.clexi.clexi.dialog.FlyingFOB"
+            android:name=".dialog.FlyingFOB"
             android:exported="true"/>
 
         <service
-            android:name="com.clexi.clexi.dialog.AccountsDialog"
+            android:name=".dialog.AccountsDialog"
             android:exported="true"/>
+
+        <meta-data
+            android:name="DATABASE"
+            android:value="clexi_sugar_v01.db"/>
+        <meta-data
+            android:name="VERSION"
+            android:value="1"/>
+        <meta-data
+            android:name="QUERY_LOG"
+            android:value="true"/>
+        <meta-data
+            android:name="DOMAIN_PACKAGE_NAME"
+            android:value="com.clexi.clexi.model.object"/>
+
+        <provider
+            android:name="br.com.mauker.materialsearchview.db.HistoryProvider"
+            android:authorities="br.com.mauker.materialsearchview.searchhistorydatabase"
+            android:exported="false"
+            android:protectionLevel="signature"
+            android:syncable="true"/>
     </application>
 
 </manifest>

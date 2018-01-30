@@ -45,8 +45,6 @@ public class Consts
     public static final String ACTION_LOGIN_REQUEST    = "ACTION_LOGIN_REQUEST";   /*KEY_A*/
     public static final String ACTION_LOGIN_FIRE       = "ACTION_LOGIN_FIRE";
     public static final String ACTION_MANAGEMENT       = "ACTION_MANAGEMENT";      /*KEY_B*/
-    public static final String ACTION_SEARCH_FOR_LOGIN = "ACTION_SEARCH_FOR_LOGIN";
-    public static final String ACTION_NEW_FOR_LOGIN    = "ACTION_NEW_FOR_LOGIN";
 
     // Keys
     public static final String KEY_A = ACTION_LOGIN_REQUEST;
@@ -65,5 +63,5 @@ public class Consts
     public static final String PACKAGE_NAME       = "PACKAGE_NAME";
     public static final String VERSION_NAME       = "VERSION_NAME";
     public static final String VERSION_CODE       = "VERSION_CODE";
-    public static final String MODE               = "MODE";
+    public static final String ACTIVITY_TYPE      = "ACTIVITY_TYPE";
 }
