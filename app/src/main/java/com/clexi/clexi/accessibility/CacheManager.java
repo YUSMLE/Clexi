@@ -10,7 +10,7 @@ public class CacheManager
     public static final String TAG = CacheManager.class.getSimpleName();
 
     // The period that cached values will be valid (in second)
-    private static final long VALID_PERIOD = 120;
+    private static final long VALID_PERIOD = 13;
 
     private static CachedLogin cachedLogin;
 

@@ -180,6 +180,11 @@ public class Utils
             {
                 return true;
             }
+
+            if (text.equalsIgnoreCase("EMAIL"))
+            {
+                return true;
+            }
         }
 
         return false;
