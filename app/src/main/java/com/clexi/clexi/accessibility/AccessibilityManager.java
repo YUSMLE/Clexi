@@ -351,6 +351,7 @@ public class AccessibilityManager extends AccessibilityService
                     // And get theirs values
                     if (mUsernameField != null &&
                             Utils.getTextOfNode(mUsernameField) != null &&
+                            !Utils.getTextOfNode(mUsernameField).isEmpty() &&
                             !Utils.isShowingHintText(mUsernameField))
                     {
                         mUsername = Utils.getTextOfNode(mUsernameField);
@@ -365,7 +366,10 @@ public class AccessibilityManager extends AccessibilityService
                     if (mUsername == null)
                     {
                         CachedLogin cachedLogin = CacheManager.retrieveCache();
-                        mUsername = cachedLogin != null ? cachedLogin.selectedUsername : null;
+                        if (cachedLogin != null)
+                        {
+                            mUsername = cachedLogin.selectedUsername;
+                        }
                     }
 
                     // TEST
