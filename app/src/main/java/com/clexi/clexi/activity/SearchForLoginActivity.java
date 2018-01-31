@@ -1,5 +1,6 @@
 package com.clexi.clexi.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.speech.RecognizerIntent;
@@ -16,6 +17,9 @@ import android.view.View;
 import android.widget.AdapterView;
 
 import com.clexi.clexi.R;
+import com.clexi.clexi.accessibility.CacheManager;
+import com.clexi.clexi.app.Consts;
+import com.clexi.clexi.dialog.ConfirmDialog;
 import com.clexi.clexi.model.access.DbManager;
 import com.clexi.clexi.model.object.Account;
 
@@ -37,6 +41,11 @@ public class SearchForLoginActivity extends BaseActivity
 
     private List<Account>   mAccounts;
     private AccountsAdapter mAccountsAdapter;
+
+    // Foreground App Information
+    private String  mActiveApp;
+    private boolean mIsBrowser;
+    private String  mCurrentUrl;
 
     /****************************************************
      * VIEWS
@@ -294,9 +303,47 @@ public class SearchForLoginActivity extends BaseActivity
         AccountsAdapter.Callback callback = new AccountsAdapter.Callback()
         {
             @Override
-            public void onSelect(Account item)
+            public void onSelect(final Account item)
             {
-                // Nothing
+                // Cache it for login
+                // todo later...
+
+                new ConfirmDialog().setListener(new ConfirmDialog.DialogListener()
+                {
+                    @Override
+                    public void onPositiveButtonClicked()
+                    {
+                        // Update account
+                        if (mIsBrowser)
+                        {
+                            // Update url of account
+                            item.setUrl(mCurrentUrl);
+                        }
+                        else
+                        {
+                            // Update appId of account
+                            item.setAppId(mActiveApp);
+                        }
+
+                        // Update database
+                        DbManager.updateAccount(item);
+
+                        // TEST
+                        CacheManager.cacheLogin(item.getId());
+
+                        // Finish activity if saving item (create/update) is done.
+                        setResult(Activity.RESULT_OK);
+                        finish();
+                    }
+
+                    @Override
+                    public void onNegativeButtonClicked()
+                    {
+                        // Nothing
+                    }
+                })
+                        .setMessage(String.format(getString(R.string.confirm_assign_account), item.getTitle()))
+                        .show(getFragmentManager(), "");
             }
         };
 
@@ -313,7 +360,44 @@ public class SearchForLoginActivity extends BaseActivity
 
     private void pullIntentData()
     {
-        // Nothing
+        Intent intent = getIntent();
+
+        // Pull foreground app information
+        mActiveApp = intent.getStringExtra(Consts.ACTIVE_APP);
+        mIsBrowser = intent.getBooleanExtra(Consts.IS_BROWSER, false);
+        mCurrentUrl = intent.getStringExtra(Consts.CURRENT_URL);
+
+        if (mIsBrowser)
+        {
+            // App ID is for Google Chrome, OS Browser or other browsers,
+            // so we wont set them.
+            mActiveApp = null;
+        }
+
+        /** Execute the code that should be executed if the activity was launched from history */
+        if (isLaunchedFromHistory(intent))
+        {
+            // This is a consumed intent
+            startActivity(new Intent(SearchForLoginActivity.this, MainActivity.class));
+
+            // Finish the current activity / clear the activity stack
+            finish();
+        }
+    }
+
+    /**
+     * Execute the code that should be executed if the activity was launched from history
+     */
+    private boolean isLaunchedFromHistory(Intent intent)
+    {
+        boolean launchedFromHistory = intent != null ?
+                (intent.getFlags() & Intent.FLAG_ACTIVITY_LAUNCHED_FROM_HISTORY) != 0 : false;
+
+        // log activity launched state
+        Log.d(TAG, "isTaskRoot: " + isTaskRoot());
+        Log.d(TAG, "launchedFromHistory: " + launchedFromHistory);
+
+        return launchedFromHistory;
     }
 
     /****************************************************
