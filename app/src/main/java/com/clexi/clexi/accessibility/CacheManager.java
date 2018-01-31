@@ -34,7 +34,12 @@ public class CacheManager
             CacheManager.mAccountId = 0;
         }
 
-        return DbManager.findAccountById(CacheManager.mAccountId);
+        Account account = DbManager.findAccountById(CacheManager.mAccountId);
+
+        // Clear cache
+        CacheManager.mAccountId = 0;
+
+        return account;
     }
 
     private static boolean isDeprecated()
