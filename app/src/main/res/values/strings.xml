@@ -50,4 +50,5 @@
     <string name="accessibility_service_description">This is a Accessibility Service description.</string>
     <string name="no_matching_logins">There is not any match for \'%s\'. Do you want to add a new one for that?</string>
     <string name="confirm_delete_account">Are you sure about delete \'%s\'?</string>
+    <string name="confirm_assign_account">Are you sure about assign \'%s\' to this website or application?</string>
 </resources>

@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.clexi.clexi.R;
+import com.clexi.clexi.accessibility.CacheManager;
 import com.clexi.clexi.app.Consts;
 import com.clexi.clexi.helper.PackageManagerHelper;
 import com.clexi.clexi.helper.ScreenHelper;
@@ -387,6 +388,9 @@ public class AddAccountActivity extends BaseActivity
 
                     // Cache it for login
                     // todo later...
+
+                    // TEST
+                    CacheManager.cacheLogin(mAccount.getId());
 
                     // Finish activity if saving item (create/update) is done.
                     setResult(Activity.RESULT_OK);

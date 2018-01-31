@@ -116,7 +116,7 @@ public class StringHelper
         }
         catch (MalformedURLException e)
         {
-            e.printStackTrace();
+            //e.printStackTrace();
 
             return false;
         }
