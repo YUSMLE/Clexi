@@ -78,8 +78,17 @@ public class AccessibilityManager extends AccessibilityService
         {
             Log.d(TAG, "AccessibilityEvent: TYPE_WINDOW_STATE_CHANGED");
 
-            // Login, after search or add new account
-            checkCachedLogin();
+            // Check if this TYPE_WINDOW_STATE_CHANGED event is reffers to our app.
+            if (getRootInActiveWindow().getPackageName().equals("com.clexi.clexi"))
+            {
+                // Give up, it's me :)
+                Log.d(TAG, "PackageName of event reffers to our app.");
+            }
+            else
+            {
+                // Login, after search or add new account
+                checkCachedLogin();
+            }
         }
         else if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
         {
@@ -198,8 +207,11 @@ public class AccessibilityManager extends AccessibilityService
 
         // todo later...
 
+        // Query content of active window
+        mRoot = getRootInActiveWindow();
+
         // Retrieve active app informations
-        checkForegroundApp(getRootInActiveWindow());
+        checkForegroundApp(mRoot);
 
         if (cachedLogin.getAppId() != null &&
                 cachedLogin.getAppId().equals(mActiveApp))
