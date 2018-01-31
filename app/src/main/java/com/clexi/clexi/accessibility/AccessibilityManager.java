@@ -220,6 +220,9 @@ public class AccessibilityManager extends AccessibilityService
 
             return;
         }
+
+        // There is no cashed Login, or it's deprecated
+        Log.d(TAG, "There is no cashed matching Login.");
     }
 
     // Let's try to find username and password fields
