@@ -356,6 +356,14 @@ public class AccessibilityManager extends AccessibilityService
                     // Query content of active window
                     mRoot = getRootInActiveWindow();
 
+                    if (mRoot.getPackageName().equals("com.clexi.clexi"))
+                    {
+                        // Give up, it's me :)
+                        Log.d(TAG, "PackageName of event reffers to our app.");
+
+                        return;
+                    }
+
                     // Retrieve active app informations
                     checkForegroundApp(mRoot);
 
