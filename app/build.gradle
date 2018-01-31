@@ -17,6 +17,14 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    sourceSets {
+        main {
+            res.srcDirs = ['src/main/res', 'src/main/res-material_search_view']
+            /* If instead of configuring a totally different folder,
+            what you want is adding a new one, you can do it this way:
+            res.srcDirs += ['src/main/res', 'src/main/res-material_search_view']*/
+        }
+    }
 }
 
 dependencies {
@@ -47,4 +55,5 @@ dependencies {
     compile 'com.github.rubensousa:bottomsheetbuilder:1.6.0'
     compile 'com.sothree.slidinguppanel:library:3.3.1'
     compile 'com.amulyakhare:com.amulyakhare.textdrawable:1.0.1'
+    compile 'br.com.mauker.materialsearchview:materialsearchview:1.2.2'
 }

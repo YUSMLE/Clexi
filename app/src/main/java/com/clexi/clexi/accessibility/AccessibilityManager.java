@@ -11,6 +11,7 @@ import android.view.KeyEvent;
 import android.view.accessibility.AccessibilityEvent;
 import android.view.accessibility.AccessibilityNodeInfo;
 
+import com.clexi.clexi.activity.MainActivity;
 import com.clexi.clexi.app.Consts;
 import com.clexi.clexi.dialog.AccountsDialog;
 import com.clexi.clexi.helper.Broadcaster;
@@ -78,7 +79,7 @@ public class AccessibilityManager extends AccessibilityService
             Log.d(TAG, "AccessibilityEvent: TYPE_WINDOW_STATE_CHANGED");
 
             // Login, after search or add new account
-            //checkCachedLogin();
+            checkCachedLogin();
         }
         else if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
         {
@@ -185,7 +186,7 @@ public class AccessibilityManager extends AccessibilityService
 
     private void checkCachedLogin()
     {
-        CachedLogin cachedLogin = CacheManager.retrieveCache();
+        Account cachedLogin = CacheManager.retrieveCache();
 
         if (cachedLogin == null) // || CacheManager.isDeprecated())
         {
@@ -196,6 +197,32 @@ public class AccessibilityManager extends AccessibilityService
         }
 
         // todo later...
+
+        // Retrieve active app informations
+        checkForegroundApp(getRootInActiveWindow());
+
+        if (cachedLogin.getAppId() != null &&
+                cachedLogin.getAppId().equals(mActiveApp))
+        {
+            // We have a cached login. Probably we returned from Add/Edit operation.
+            // So, fire that...
+            Broadcaster.broadcast(AccessibilityManager.this, Consts.ACTION_LOGIN_FIRE, cachedLogin);
+
+            return;
+        }
+
+        if (cachedLogin.getUrl() != null &&
+                cachedLogin.getUrl().equals(mCurrentUrl))
+        {
+            // We have a cached login. Probably we returned from Add/Edit operation.
+            // So, fire that...
+            Broadcaster.broadcast(AccessibilityManager.this, Consts.ACTION_LOGIN_FIRE, cachedLogin);
+
+            return;
+        }
+
+        // There is no cashed Login, or it's deprecated
+        Log.d(TAG, "There is no cashed matching Login.");
     }
 
     // Let's try to find username and password fields
@@ -364,17 +391,22 @@ public class AccessibilityManager extends AccessibilityService
                     // TEST
                     if (mUsername == null)
                     {
-                        CachedLogin cachedLogin = CacheManager.retrieveCache();
+                        Account cachedLogin = CacheManager.retrieveCache();
                         if (cachedLogin != null)
                         {
-                            mUsername = cachedLogin.selectedUsername;
+                            mUsername = cachedLogin.getUsername();
                         }
                     }
 
                     // TEST
                     Log.d(TAG, "Username value: " + mUsername);
 
-                    ArrayList<Account> matchingLogins = mLoginManager.getMatchingLoginssWith(mActiveApp, mIsBrowser, mCurrentUrl, mUsername);
+                    ArrayList<Account> matchingLogins = (ArrayList) mLoginManager.getMatchingLoginsWith(
+                            mActiveApp,
+                            mIsBrowser,
+                            mCurrentUrl,
+                            mUsername
+                    );
 
                     if (matchingLogins == null || matchingLogins.size() == 0)
                     {
@@ -462,6 +494,7 @@ public class AccessibilityManager extends AccessibilityService
                         // TEST
                         setField(mUsernameField, account.getUsername());
                         setField(mPasswordField, account.getPassword());
+                        Log.e(TAG, "Text of password field: " + Utils.getTextOfNode(mPasswordField));
                     }
                     else if (mUsernameField != null)
                     {
@@ -479,7 +512,7 @@ public class AccessibilityManager extends AccessibilityService
                         setField(mUsernameField, account.getUsername());
 
                         // TEST
-                        CacheManager.cacheLogin(new CachedLogin(mActiveApp, mIsBrowser, mCurrentUrl, account.getUsername()));
+                        CacheManager.cacheLogin(account.getId());
                     }
                     else if (mPasswordField != null)
                     {
@@ -507,7 +540,14 @@ public class AccessibilityManager extends AccessibilityService
 
                     /*Open the main UI to manage the accounts*/
 
-                    // todo again...
+                    // todo later...
+
+                    Intent i = new Intent(AccessibilityManager.this, MainActivity.class);
+                    // Calling startActivity() from outside of an Activity context
+                    // requires the FLAG_ACTIVITY_NEW_TASK flag.
+                    // Is this really what you want? :)
+                    i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(i);
                 }
                 else
                 {
