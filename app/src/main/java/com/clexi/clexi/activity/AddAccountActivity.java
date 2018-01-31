@@ -141,6 +141,17 @@ public class AddAccountActivity extends BaseActivity
         {
             return true;
         }
+        else if (id == android.R.id.home)
+        {
+            // App icon in action bar clicked; go home or finish this activity
+            /*Intent intent = new Intent(this, HomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);*/
+
+            finish();
+
+            return true;
+        }
 
         return super.onOptionsItemSelected(item);
     }

@@ -70,7 +70,7 @@ public class SearchForLoginActivity extends BaseActivity
         // Set ActionBar
         ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setDisplayHomeAsUpEnabled(false);
+        actionBar.setDisplayHomeAsUpEnabled(true);
 
         // Add some dummy data :)
         DbManager.addMockData();
@@ -102,6 +102,17 @@ public class SearchForLoginActivity extends BaseActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings)
         {
+            return true;
+        }
+        else if (id == android.R.id.home)
+        {
+            // App icon in action bar clicked; go home or finish this activity
+            /*Intent intent = new Intent(this, HomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);*/
+
+            finish();
+
             return true;
         }
         else if (id == R.id.action_search)
