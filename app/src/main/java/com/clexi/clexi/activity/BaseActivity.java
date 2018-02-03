@@ -1,14 +1,21 @@
 package com.clexi.clexi.activity;
 
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.ServiceConnection;
 import android.os.Bundle;
+import android.os.IBinder;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
 import com.clexi.clexi.R;
+import com.clexi.clexi.bluetoothle.BleService;
+import com.clexi.clexi.helper.Utils;
 
 public class BaseActivity extends AppCompatActivity
 {
@@ -88,6 +95,9 @@ public class BaseActivity extends AppCompatActivity
     protected void onResume()
     {
         super.onResume();
+
+        // Bind to BleService, again
+        bindToBleService();
     }
 
     @Override
@@ -100,6 +110,9 @@ public class BaseActivity extends AppCompatActivity
     protected void onStop()
     {
         super.onStop();
+
+        // Unbind from BleService for prevent of memory leak
+        unbindFromService();
     }
 
     @Override
@@ -157,12 +170,65 @@ public class BaseActivity extends AppCompatActivity
      * FUNCTIONALITY
      ***************************************************/
 
-    // Nothing
+    protected void startBleService()
+    {
+        // Start BleService, if it's not
+        if (Utils.isMyServiceRunning(getApplicationContext(), BleService.class))
+        {
+            BleService.startService(getApplicationContext());
+        }
+    }
+
+    protected void bindToBleService()
+    {
+        // Bind to BleService
+        Intent intent = new Intent(BaseActivity.this, BleService.class);
+        bindService(intent, mConnection, Context.BIND_AUTO_CREATE);
+    }
+
+    protected void unbindFromService()
+    {
+        // Unbind from BleService
+        unbindService(mConnection);
+        mBound = false;
+    }
 
     /****************************************************
      * INNER CLASSES
      ***************************************************/
 
-    // Nothing
+    protected BleService mService;
+    protected boolean mBound = false;
+
+    /**
+     * Defines callbacks for service binding, passed to bindService()
+     */
+    private ServiceConnection mConnection = new ServiceConnection()
+    {
+
+        @Override
+        public void onServiceConnected(ComponentName className, IBinder service)
+        {
+            // We've bound to LocalService, cast the IBinder and get LocalService instance
+            BleService.LocalBinder binder = (BleService.LocalBinder) service;
+            mService = binder.getService();
+            mBound = true;
+
+            Log.i(TAG, "Connected to BleService");
+        }
+
+        @Override
+        public void onServiceDisconnected(ComponentName className)
+        {
+            mBound = false;
+
+            Log.i(TAG, "Disconnected from to BleService");
+        }
+    };
+
+    /**
+     * What do you want to do when BleService be connected?!
+     */
+    // todo later...
 
 }
