@@ -85,4 +85,17 @@ public class Broadcaster
             Log.e(TAG, "Error with broadcast " + action, e);
         }
     }
+
+    public static void broadcastKey(Context context, String action)
+    {
+        try
+        {
+            final Intent intent = new Intent(action);
+            context.sendBroadcast(intent);
+        }
+        catch (Exception e)
+        {
+            Log.e(TAG, "Error with broadcast " + action, e);
+        }
+    }
 }

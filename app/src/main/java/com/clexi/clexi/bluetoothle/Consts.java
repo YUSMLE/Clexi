@@ -41,6 +41,13 @@ public class Consts
 
     public static final String ACTION_GATT_SCAN_CALLBACK = "ACTION_GATT_SCAN_CALLBACK";
 
+    public static final String ACTION_LOGIN_REQUEST = "ACTION_LOGIN_REQUEST";   /*KEY_A*/
+    public static final String ACTION_MANAGEMENT    = "ACTION_MANAGEMENT";      /*KEY_B*/
+
+    // Keys
+    public static final String KEY_A = ACTION_LOGIN_REQUEST;
+    public static final String KEY_B = ACTION_MANAGEMENT;
+
     /****************************************************
      * REQUEST CODES
      ***************************************************/
