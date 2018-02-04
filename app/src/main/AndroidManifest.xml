@@ -60,6 +60,8 @@
                   android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <service android:name=".bluetoothle.BleService"/>
+
         <service
             android:name=".accessibility.AccessibilityManager"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
@@ -73,11 +75,11 @@
         </service>
 
         <service
-            android:name=".dialog.FlyingFOB"
+            android:name=".dialog.AccountsDialog"
             android:exported="true"/>
 
         <service
-            android:name=".dialog.AccountsDialog"
+            android:name=".dialog.FlyingFOB"
             android:exported="true"/>
 
         <meta-data

@@ -289,6 +289,63 @@ public class BleService extends Service
         }
     }
 
+    public boolean connect(BluetoothDevice device)
+    {
+        try
+        {
+            if (mAdapter == null || device == null)
+            {
+                if (debug)
+                {
+                    Log.d(TAG, "BluetoothAdapter not initialized or unspecified device.");
+                }
+
+                return false;
+            }
+
+            // Previously connected device? Try to reconnect.
+            if (mConnectedAddress != null && mConnectedAddress.equals(device.getAddress()) && mGatt != null)
+            {
+                if (debug)
+                {
+                    Log.d(TAG, "Trying to use an existing BluetoothGatt for connection.");
+                }
+
+                if (mGatt.connect())
+                {
+                    return true;
+                }
+            }
+
+            // Init BluetoothGattCallback here
+            mGattCallback = new GattCallback();
+
+            // We want to directly connect to the device, so we are setting the autoConnect parameter to false.
+            if (Build.VERSION.SDK_INT < 23)
+            {
+                mGatt = device.connectGatt(this, false, mGattCallback);
+            }
+            else
+            {
+                mGatt = device.connectGatt(this, true, mGattCallback, BluetoothDevice.TRANSPORT_LE);
+                mGatt.requestConnectionPriority(BluetoothGatt.CONNECTION_PRIORITY_HIGH);
+            }
+
+            BleUtils.refreshDeviceCache(mGatt);
+
+            return true;
+        }
+        catch (Exception e)
+        {
+            if (debug)
+            {
+                Log.e(TAG, "Error while BluetoothGatt connecting", e);
+            }
+
+            return false;
+        }
+    }
+
     /**
      * Disconnects an existing connection or cancel a pending connection.
      *
@@ -721,7 +778,7 @@ public class BleService extends Service
          * Because we know this service always runs in the same process as its clients,
          * we don't need to deal with IPC.
          */
-        BleService getService()
+        public BleService getService()
         {
             return BleService.this;
         }

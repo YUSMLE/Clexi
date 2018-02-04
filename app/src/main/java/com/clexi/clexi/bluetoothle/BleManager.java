@@ -1,5 +1,6 @@
 package com.clexi.clexi.bluetoothle;
 
+import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothGattCharacteristic;
 import android.bluetooth.BluetoothGattService;
 import android.bluetooth.BluetoothProfile;
@@ -136,6 +137,18 @@ public class BleManager
         }
 
         mBleService.connect(address);
+    }
+
+    public void connect(BluetoothDevice device)
+    {
+        if (mBleService.getBleState().equals(BleState.CONNECTED))
+        {
+            Log.w(TAG, "We are already connected!");
+
+            return;
+        }
+
+        mBleService.connect(device);
     }
 
     public void disconnect()
@@ -289,8 +302,8 @@ public class BleManager
     private void transmitApduData(byte[] data)
     {
         // Making BLE Packets
-        int totalPackets = BlePacket.calcTotalPacket(data.length);
-        ArrayList<BlePacket> blePackets = new ArrayList<>(totalPackets);
+        int                  totalPackets = BlePacket.calcTotalPacket(data.length);
+        ArrayList<BlePacket> blePackets   = new ArrayList<>(totalPackets);
 
         // Init BLE Packet
         InitBlePacket initBlePacket = new InitBlePacket();
@@ -299,8 +312,9 @@ public class BleManager
         initBlePacket.setLlen((byte) 0);
         initBlePacket.setData(new byte[Consts.DATA_LENGHT_PER_BLE_INIT_PACKET]);
         System.arraycopy(data, 0,
-                initBlePacket.getData(), 0,
-                data.length >= Consts.DATA_LENGHT_PER_BLE_INIT_PACKET ? Consts.DATA_LENGHT_PER_BLE_INIT_PACKET : data.length);
+                         initBlePacket.getData(), 0,
+                         data.length >= Consts.DATA_LENGHT_PER_BLE_INIT_PACKET ? Consts.DATA_LENGHT_PER_BLE_INIT_PACKET : data.length
+        );
 
         blePackets.add(initBlePacket);
 
@@ -315,8 +329,9 @@ public class BleManager
             int length = (srcPos + 19) <= data.length ? 19 : data.length - srcPos;
 
             System.arraycopy(data, srcPos,
-                    seqBlePacket.getData(), 0,
-                    length);
+                             seqBlePacket.getData(), 0,
+                             length
+            );
 
             blePackets.add(seqBlePacket);
         }
@@ -359,9 +374,9 @@ public class BleManager
             mPackets.add(packet);
         }
 
-        InitBlePacket initPackect = (InitBlePacket) mPackets.get(0);
-        int totalLen = initPackect.calcTotalLen(initPackect.getHlen(), initPackect.getLlen());
-        int totalPackets = BlePacket.calcTotalPacket(totalLen);
+        InitBlePacket initPackect  = (InitBlePacket) mPackets.get(0);
+        int           totalLen     = initPackect.calcTotalLen(initPackect.getHlen(), initPackect.getLlen());
+        int           totalPackets = BlePacket.calcTotalPacket(totalLen);
 
         if (mPackets.size() == totalPackets)
         {
@@ -372,8 +387,8 @@ public class BleManager
                 // This is an Event
                 Log.d(TAG, "An event received.");
 
-                byte[] totalData = mergeData();
-                ApduCommand command = new ApduCommand();
+                byte[]      totalData = mergeData();
+                ApduCommand command   = new ApduCommand();
                 command.pullFrom(totalData);
 
                 if (command.getIns() == (byte) 0x03)
@@ -400,19 +415,21 @@ public class BleManager
     private byte[] mergeData()
     {
         InitBlePacket initPackect = (InitBlePacket) mPackets.get(0);
-        int totalLen = initPackect.calcTotalLen(initPackect.getHlen(), initPackect.getLlen());
+        int           totalLen    = initPackect.calcTotalLen(initPackect.getHlen(), initPackect.getLlen());
 
         byte[] totalData = new byte[totalLen];
 
         System.arraycopy(initPackect.getData(), 0,
-                totalData, 0,
-                totalLen >= Consts.DATA_LENGHT_PER_BLE_INIT_PACKET ? Consts.DATA_LENGHT_PER_BLE_INIT_PACKET : totalLen);
+                         totalData, 0,
+                         totalLen >= Consts.DATA_LENGHT_PER_BLE_INIT_PACKET ? Consts.DATA_LENGHT_PER_BLE_INIT_PACKET : totalLen
+        );
 
         for (int i = 1; i < mPackets.size(); i++)
         {
             System.arraycopy(((SeqBlePacket) mPackets.get(i)).getData(), 0,
-                    totalData, (i - 1) * Consts.DATA_LENGHT_PER_BLE_SEQ_PACKET,
-                    Consts.DATA_LENGHT_PER_BLE_SEQ_PACKET);
+                             totalData, (i - 1) * Consts.DATA_LENGHT_PER_BLE_SEQ_PACKET,
+                             Consts.DATA_LENGHT_PER_BLE_SEQ_PACKET
+            );
         }
 
         return totalData;
@@ -472,11 +489,24 @@ public class BleManager
             @Override
             public void onReceive(Context context, Intent intent)
             {
+                // Broadcasted action
                 String action = intent.getAction();
-                
+
+                // Bonding state
+                int state = intent.getIntExtra(
+                        BluetoothDevice.EXTRA_BOND_STATE,
+                        BluetoothDevice.ERROR
+                );
+
+                // Broadcasted bluetooth device
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+
+                /**
+                 * Check gatt actions
+                 */
                 if (action.equals(Consts.ACTION_GATT_CONNECTION_STATE_CHANGE))
                 {
-                    int status = intent.getIntExtra(Consts.GATT_STATUS, 0);
+                    int status   = intent.getIntExtra(Consts.GATT_STATUS, 0);
                     int newState = intent.getIntExtra(Consts.GATT_NEW_STATE, 0);
                     onConnectionStateChange(status, newState);
                 }
@@ -505,6 +535,45 @@ public class BleManager
                 else if (action.equals(Consts.ACTION_GATT_DESCRIPTOR_WRITE))
                 {
                     onDescriptorWrite();
+                }
+
+                /**
+                 * Check bonding state
+                 */
+                else if (state == BluetoothDevice.BOND_BONDED)
+                {
+                    Log.d(TAG, "Device " + device + " paired.");
+                }
+                else if (state == BluetoothDevice.BOND_BONDING)
+                {
+                    Log.d(TAG, "Device " + device + " pairing is in process...");
+                }
+                else if (state == BluetoothDevice.BOND_NONE)
+                {
+                    Log.d(TAG, "Device " + device + " is unpaired.");
+                }
+                /*else
+                {
+                    Log.d(TAG, "Device " + device + " is in undefined state!");
+                }*/
+
+                /**
+                 * Check connecting state
+                 */
+                else if (BluetoothDevice.ACTION_FOUND.equals(action))
+                {
+                    // A device is found
+                    Log.d(TAG, "Device " + device + " is found.");
+                }
+                else if (BluetoothDevice.ACTION_ACL_CONNECTED.equals(action))
+                {
+                    // A device is connected
+                    Log.d(TAG, "Device " + device + " is connected.");
+                }
+                else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action))
+                {
+                    // A device is disconnected
+                    Log.d(TAG, "Device " + device + " is disconnected.");
                 }
             }
         };
