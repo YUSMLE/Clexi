@@ -5,6 +5,15 @@
     <!-- DRAW OVERLAY PERMISSION -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
 
+    <!-- Bluetooth -->
+    <uses-permission android:name="android.permission.BLUETOOTH"/>
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN"/>
+
+    <!-- Location -->
+    <uses-permission android:name="android.permission.ACCESS_WIFI_STATE"/>
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
+
     <application
         android:name=".app.App"
         android:allowBackup="true"
@@ -54,6 +63,8 @@
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
+        <service android:name=".bluetoothle.BleService"/>
+
         <service
             android:name=".accessibility.AccessibilityManager"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
@@ -66,10 +77,10 @@
                 android:resource="@xml/accessibility_service_resource"/>
         </service>
         <service
-            android:name=".dialog.FlyingFOB"
+            android:name=".dialog.AccountsDialog"
             android:exported="true"/>
         <service
-            android:name=".dialog.AccountsDialog"
+            android:name=".dialog.FlyingFOB"
             android:exported="true"/>
 
         <meta-data
