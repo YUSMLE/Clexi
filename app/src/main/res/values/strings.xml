@@ -11,6 +11,7 @@
     <string name="title_activity_edit_account">Edit Account</string>
     <string name="title_activity_app_chooser">Choose Application</string>
     <string name="title_activity_password_generator">Generate Password</string>
+    <string name="title_activity_connection_settings">Connection Settings</string>
 
     <!-- Controlls -->
     <string name="positive">OK</string>
