@@ -97,6 +97,9 @@ public class MainActivity extends BaseActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings)
         {
+            // Let's go to manage our BLE connections
+            goToConnectionSettings();
+
             return true;
         }
 
@@ -257,6 +260,12 @@ public class MainActivity extends BaseActivity
         // So, I commented it for now.
         //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
         startActivityForResult(intent, Consts.REQUEST_ADD_EDIT_DELETE_ACCOUNT);
+    }
+
+    private void goToConnectionSettings()
+    {
+        Intent intent = new Intent(MainActivity.this, ConnectionSettingsActivity.class);
+        startActivity(intent);
     }
 
     private void createBottomSheetMenuDialog(final Account account)
