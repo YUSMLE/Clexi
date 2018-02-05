@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.Switch;
@@ -38,17 +39,24 @@ public class ConnectionSettingsAdapter extends RecyclerView.Adapter<RecyclerView
      ***************************************************/
 
     private Context                            mContext;
-    private List<BluetoothDevice>              mDataset;
+    private List<BluetoothDevice>              mPairedDevices;
+    private List<BluetoothDevice>              mFoundDevices;
     private ConnectionSettingsAdapter.Callback mCallback;
 
     /****************************************************
      * Provide a suitable constructor (depends on the kind of dataset)
      ***************************************************/
 
-    public ConnectionSettingsAdapter(Context context, List<BluetoothDevice> dataset, ConnectionSettingsAdapter.Callback callback)
+    public ConnectionSettingsAdapter(
+            Context context,
+            List<BluetoothDevice> pairedDevices,
+            List<BluetoothDevice> foundDevices,
+            ConnectionSettingsAdapter.Callback callback
+    )
     {
         mContext = context;
-        mDataset = dataset;
+        mPairedDevices = pairedDevices;
+        mFoundDevices = foundDevices;
         mCallback = callback;
     }
 
@@ -72,19 +80,19 @@ public class ConnectionSettingsAdapter extends RecyclerView.Adapter<RecyclerView
 
             case TYPE_FOUND_DEVICE_LABEL:
                 View view1 = inflater.inflate(R.layout.item_connection_settings_found_devices_label, parent, false);
-                holder = new ViewHolder0(view1);
+                holder = new ViewHolder1(view1);
                 // todo later...
                 break;
 
             case TYPE_PAIRED_DEVICE:
                 View view2 = inflater.inflate(R.layout.item_connection_settings_paired_device, parent, false);
-                holder = new ViewHolder1(view2);
+                holder = new ViewHolder2(view2);
                 // todo later...
                 break;
 
             case TYPE_FOUND_DEVICE:
                 View view3 = inflater.inflate(R.layout.item_connection_settings_found_device, parent, false);
-                holder = new ViewHolder2(view3);
+                holder = new ViewHolder3(view3);
                 // todo later...
                 break;
         }
@@ -136,25 +144,60 @@ public class ConnectionSettingsAdapter extends RecyclerView.Adapter<RecyclerView
     // Init View TYPE_PAIRED_DEVICE_LABEL
     private void configureViewHolder0(ViewHolder0 holder, int position)
     {
-        // todo later...
+        holder.title.setText("Paired Clexies");
     }
 
     // Init View TYPE_FOUND_DEVICE_LABEL
     private void configureViewHolder1(ViewHolder1 holder, int position)
     {
-        // todo later...
+        holder.title.setText("Pair your device with a new Clexi");
+
+        holder.search.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // todo later...
+            }
+        });
     }
 
     // Init View TYPE_PAIRED_DEVICE
     private void configureViewHolder2(ViewHolder2 holder, int position)
     {
-        // todo later...
+        holder.icon.setImageResource(R.mipmap.ic_launcher);
+
+        holder.title.setText(mPairedDevices.get(position - 1).getName());
+
+        holder.subtitle.setText(mPairedDevices.get(position - 1).getAddress());
+
+        holder.setAsDefault.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                // todo later...
+            }
+        });
     }
 
     // Init View TYPE_FOUND_DEVICE
     private void configureViewHolder3(ViewHolder3 holder, int position)
     {
-        // todo later...
+        holder.icon.setImageResource(R.mipmap.ic_launcher);
+
+        holder.title.setText(mPairedDevices.get(position - mPairedDevices.size() - mFoundDevices.size() - 2).getName());
+
+        holder.subtitle.setText(mPairedDevices.get(position - mPairedDevices.size() - mFoundDevices.size() - 2).getAddress());
+
+        holder.pair.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                // todo later...
+            }
+        });
     }
 
     /****************************************************
@@ -165,7 +208,7 @@ public class ConnectionSettingsAdapter extends RecyclerView.Adapter<RecyclerView
     @Override
     public int getItemCount()
     {
-        return mDataset.size();
+        return mPairedDevices.size() + mFoundDevices.size() + 2;
     }
 
     @Override
@@ -174,22 +217,38 @@ public class ConnectionSettingsAdapter extends RecyclerView.Adapter<RecyclerView
         // Return view type depending on position
         // Note that unlike in ListView adapters, types don't have to be contiguous
 
-        // todo later...
+        int pairedLabelPos = 0;
+        int foundLabelPos  = mPairedDevices.size() + 1;
 
-        return 0;
+        if (position == pairedLabelPos)
+        {
+            return TYPE_PAIRED_DEVICE_LABEL;
+        }
+        else if (position == foundLabelPos)
+        {
+            return TYPE_FOUND_DEVICE_LABEL;
+        }
+        else if (position > pairedLabelPos && position < foundLabelPos)
+        {
+            return TYPE_PAIRED_DEVICE;
+        }
+        else
+        {
+            return TYPE_FOUND_DEVICE;
+        }
     }
 
     public void add(BluetoothDevice item, int position)
     {
-        mDataset.add(position, item);
-        notifyItemInserted(position);
+        //mDataset.add(position, item);
+        //notifyItemInserted(position);
     }
 
     public void remove(BluetoothDevice item)
     {
-        int position = mDataset.indexOf(item);
-        mDataset.remove(position);
-        notifyItemRemoved(position);
+        //int position = mDataset.indexOf(item);
+        //mDataset.remove(position);
+        //notifyItemRemoved(position);
     }
 
     private void doSomething(BluetoothDevice item)
@@ -225,7 +284,7 @@ public class ConnectionSettingsAdapter extends RecyclerView.Adapter<RecyclerView
     {
         @BindView(R.id.rootLayout) ViewGroup   rootLayout;
         @BindView(R.id.title)      TextView    title;
-        @BindView(R.id.icon)       ImageButton search;
+        @BindView(R.id.search)       ImageButton search;
 
         public ViewHolder1(View view)
         {
@@ -241,10 +300,10 @@ public class ConnectionSettingsAdapter extends RecyclerView.Adapter<RecyclerView
     // View TYPE_PAIRED_DEVICE
     public static class ViewHolder2 extends RecyclerView.ViewHolder
     {
-        @BindView(R.id.rootLayout) ViewGroup rootLayout;
-        @BindView(R.id.icon)       ImageView icon;
-        @BindView(R.id.title)      TextView  title;
-        @BindView(R.id.subtitle)   TextView  subtitle;
+        @BindView(R.id.rootLayout)   ViewGroup rootLayout;
+        @BindView(R.id.icon)         ImageView icon;
+        @BindView(R.id.title)        TextView  title;
+        @BindView(R.id.subtitle)     TextView  subtitle;
         @BindView(R.id.setAsDefault) Switch    setAsDefault;
 
         public ViewHolder2(View view)
