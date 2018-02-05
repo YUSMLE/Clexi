@@ -23,6 +23,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 
 import com.clexi.clexi.R;
+import com.clexi.clexi.accessibility.CacheManager;
 import com.clexi.clexi.app.Consts;
 import com.clexi.clexi.helper.PackageManagerHelper;
 import com.clexi.clexi.helper.ScreenHelper;
@@ -138,6 +139,17 @@ public class AddAccountActivity extends BaseActivity
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings)
         {
+            return true;
+        }
+        else if (id == android.R.id.home)
+        {
+            // App icon in action bar clicked; go home or finish this activity
+            /*Intent intent = new Intent(this, HomeActivity.class);
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+            startActivity(intent);*/
+
+            finish();
+
             return true;
         }
 
@@ -387,6 +399,9 @@ public class AddAccountActivity extends BaseActivity
 
                     // Cache it for login
                     // todo later...
+
+                    // TEST
+                    CacheManager.cacheLogin(mAccount.getId());
 
                     // Finish activity if saving item (create/update) is done.
                     setResult(Activity.RESULT_OK);

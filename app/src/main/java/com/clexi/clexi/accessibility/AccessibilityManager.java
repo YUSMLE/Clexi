@@ -78,8 +78,17 @@ public class AccessibilityManager extends AccessibilityService
         {
             Log.d(TAG, "AccessibilityEvent: TYPE_WINDOW_STATE_CHANGED");
 
-            // Login, after search or add new account
-            //checkCachedLogin();
+            // Check if this TYPE_WINDOW_STATE_CHANGED event is reffers to our app.
+            if (getRootInActiveWindow().getPackageName().equals("com.clexi.clexi"))
+            {
+                // Give up, it's me :)
+                Log.d(TAG, "PackageName of event reffers to our app.");
+            }
+            else
+            {
+                // Login, after search or add new account
+                checkCachedLogin();
+            }
         }
         else if (event.getEventType() == AccessibilityEvent.TYPE_WINDOW_CONTENT_CHANGED)
         {
@@ -186,7 +195,7 @@ public class AccessibilityManager extends AccessibilityService
 
     private void checkCachedLogin()
     {
-        CachedLogin cachedLogin = CacheManager.retrieveCache();
+        Account cachedLogin = CacheManager.retrieveCache();
 
         if (cachedLogin == null) // || CacheManager.isDeprecated())
         {
@@ -197,6 +206,35 @@ public class AccessibilityManager extends AccessibilityService
         }
 
         // todo later...
+
+        // Query content of active window
+        mRoot = getRootInActiveWindow();
+
+        // Retrieve active app informations
+        checkForegroundApp(mRoot);
+
+        if (cachedLogin.getAppId() != null &&
+                cachedLogin.getAppId().equals(mActiveApp))
+        {
+            // We have a cached login. Probably we returned from Add/Edit operation.
+            // So, fire that...
+            Broadcaster.broadcast(AccessibilityManager.this, Consts.ACTION_LOGIN_FIRE, cachedLogin);
+
+            return;
+        }
+
+        if (cachedLogin.getUrl() != null &&
+                cachedLogin.getUrl().equals(mCurrentUrl))
+        {
+            // We have a cached login. Probably we returned from Add/Edit operation.
+            // So, fire that...
+            Broadcaster.broadcast(AccessibilityManager.this, Consts.ACTION_LOGIN_FIRE, cachedLogin);
+
+            return;
+        }
+
+        // There is no cashed Login, or it's deprecated
+        Log.d(TAG, "There is no cashed matching Login.");
     }
 
     // Let's try to find username and password fields
@@ -330,6 +368,14 @@ public class AccessibilityManager extends AccessibilityService
                     // Query content of active window
                     mRoot = getRootInActiveWindow();
 
+                    if (mRoot.getPackageName().equals("com.clexi.clexi"))
+                    {
+                        // Give up, it's me :)
+                        Log.d(TAG, "PackageName of event reffers to our app.");
+
+                        return;
+                    }
+
                     // Retrieve active app informations
                     checkForegroundApp(mRoot);
 
@@ -351,6 +397,7 @@ public class AccessibilityManager extends AccessibilityService
                     // And get theirs values
                     if (mUsernameField != null &&
                             Utils.getTextOfNode(mUsernameField) != null &&
+                            !Utils.getTextOfNode(mUsernameField).isEmpty() &&
                             !Utils.isShowingHintText(mUsernameField))
                     {
                         mUsername = Utils.getTextOfNode(mUsernameField);
@@ -364,8 +411,11 @@ public class AccessibilityManager extends AccessibilityService
                     // TEST
                     if (mUsername == null)
                     {
-                        CachedLogin cachedLogin = CacheManager.retrieveCache();
-                        mUsername = cachedLogin != null ? cachedLogin.selectedUsername : null;
+                        Account cachedLogin = CacheManager.retrieveCache();
+                        if (cachedLogin != null)
+                        {
+                            mUsername = cachedLogin.getUsername();
+                        }
                     }
 
                     // TEST
@@ -482,7 +532,7 @@ public class AccessibilityManager extends AccessibilityService
                         setField(mUsernameField, account.getUsername());
 
                         // TEST
-                        CacheManager.cacheLogin(new CachedLogin(mActiveApp, mIsBrowser, mCurrentUrl, account.getUsername()));
+                        CacheManager.cacheLogin(account.getId());
                     }
                     else if (mPasswordField != null)
                     {
@@ -512,12 +562,70 @@ public class AccessibilityManager extends AccessibilityService
 
                     // todo later...
 
-                    Intent i = new Intent(AccessibilityManager.this, MainActivity.class);
+                    /*Intent i = new Intent(AccessibilityManager.this, MainActivity.class);
                     // Calling startActivity() from outside of an Activity context
                     // requires the FLAG_ACTIVITY_NEW_TASK flag.
                     // Is this really what you want? :)
                     i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                    startActivity(i);
+                    startActivity(i);*/
+
+                    // TEST
+                    /**
+                     * Show the menu to user to choose an account,
+                     * or search or add a new Account
+                     */
+
+                    // Query content of active window
+                    mRoot = getRootInActiveWindow();
+
+                    if (mRoot.getPackageName().equals("com.clexi.clexi"))
+                    {
+                        // Give up, it's me :)
+                        Log.d(TAG, "PackageName of event reffers to our app.");
+
+                        return;
+                    }
+
+                    // Retrieve active app informations
+                    checkForegroundApp(mRoot);
+
+                    // First, clear already queried fields
+                    mFields.clear();
+                    mUsernameField = null;
+                    mPasswordField = null;
+                    mUsername = null;
+                    mPassword = null;
+
+                    // Then, query username and password fields
+                    getFields(mRoot);
+
+                    // Queries for username are removed from here...
+
+                    ArrayList<Account> matchingLogins = (ArrayList) mLoginManager.getMatchingLoginsWith(
+                            mActiveApp,
+                            mIsBrowser,
+                            mCurrentUrl,
+                            mUsername
+                    );
+
+                    /**
+                     * Show the menu to user to choose an account,
+                     * or search or add a new Account
+                     */
+
+                    if (!com.clexi.clexi.helper.Utils.isMyServiceRunning(getApplicationContext(), AccountsDialog.class))
+                    {
+                            /*Start the Service*/
+
+                        Intent i = new Intent(AccessibilityManager.this, AccountsDialog.class);
+
+                        i.putParcelableArrayListExtra(Consts.ACCOUNTS, matchingLogins);
+                        i.putExtra(Consts.ACTIVE_APP, mActiveApp);
+                        i.putExtra(Consts.IS_BROWSER, mIsBrowser);
+                        i.putExtra(Consts.CURRENT_URL, mCurrentUrl);
+
+                        startService(i);
+                    }
                 }
                 else
                 {

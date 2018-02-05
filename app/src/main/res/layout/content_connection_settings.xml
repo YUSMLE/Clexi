@@ -11,12 +11,12 @@
     android:paddingTop="3dp"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context=".activity.SearchForLoginActivity"
-    tools:showIn="@layout/activity_main">
+    tools:showIn="@layout/activity_connection_settings">
 
     <android.support.v7.widget.RecyclerView
-        android:id="@+id/accountList"
+        android:id="@+id/deviceList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scrollbars="vertical"
-        tools:listitem="@layout/item_account"/>
+        tools:listitem="@layout/item_connection_settings_paired_device"/>
 </RelativeLayout>

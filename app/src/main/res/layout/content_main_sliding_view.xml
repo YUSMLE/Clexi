@@ -48,5 +48,5 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:scrollbars="vertical"
-        tools:listitem="@layout/item_device"/>
+        tools:listitem="@layout/item_connection_settings_paired_device"/>
 </LinearLayout>
