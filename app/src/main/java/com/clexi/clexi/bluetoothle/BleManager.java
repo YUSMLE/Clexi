@@ -18,6 +18,9 @@ import com.clexi.clexi.bluetoothle.object.SeqBlePacket;
 import com.clexi.clexi.bluetoothle.queue.GattOperation;
 import com.clexi.clexi.bluetoothle.queue.GattOperationQueue;
 import com.clexi.clexi.bluetoothle.queue.GattOperationType;
+import com.clexi.clexi.helper.StringHelper;
+import com.clexi.clexi.model.access.DbManager;
+import com.clexi.clexi.model.object.Device;
 
 import java.util.ArrayList;
 
@@ -129,7 +132,7 @@ public class BleManager
 
     public void connect(String address)
     {
-        if (mBleService.getBleState().equals(BleState.CONNECTED))
+        if (isConnected())
         {
             Log.w(TAG, "We are already connected!");
 
@@ -141,7 +144,7 @@ public class BleManager
 
     public void connect(BluetoothDevice device)
     {
-        if (mBleService.getBleState().equals(BleState.CONNECTED))
+        if (isConnected())
         {
             Log.w(TAG, "We are already connected!");
 
@@ -153,7 +156,7 @@ public class BleManager
 
     public void disconnect()
     {
-        if (!mBleService.getBleState().equals(BleState.CONNECTED))
+        if (!isConnected())
         {
             Log.w(TAG, "We are not connected!");
 
@@ -185,7 +188,7 @@ public class BleManager
 
     public void firmwareVersionRequest()
     {
-        if (!getBleState().equals(BleState.CONNECTED))
+        if (!isConnected())
         {
             Log.w(TAG, "We are not connected!");
 
@@ -197,7 +200,7 @@ public class BleManager
         command.setIns((byte) 0);
         command.setP1((byte) 0);
         command.setP2((byte) 0);
-        command.setLc((byte) 0);
+        //command.setLc((byte) 0); // todo later...
         command.setData(new byte[0]);
 
         // Send APDU Packet
@@ -206,7 +209,7 @@ public class BleManager
 
     public boolean readRemoteRssi()
     {
-        if (!mBleService.getBleState().equals(BleState.CONNECTED))
+        if (!isConnected())
         {
             Log.w(TAG, "We are not connected!");
 
@@ -232,13 +235,13 @@ public class BleManager
         switch (newState)
         {
             case BluetoothProfile.STATE_CONNECTED:
-                BleManager.getInstance().setBleState(BleState.CONNECTED);
+                setConnected(true);
                 break;
 
             case BluetoothProfile.STATE_DISCONNECTED:
                 // Clear connected address
+                setConnected(false);
                 setConnectedAddress(null);
-                BleManager.getInstance().setBleState(BleState.SCANNING);
                 break;
 
             default:
@@ -254,10 +257,8 @@ public class BleManager
         mQueue.resetQueue();
 
         // Set Characteristic Notification
-        setCharacteristicNotificationQueue(true); // enable equals to true by default
-
-        // Get Firmware Version
-        firmwareVersionRequest();
+        // `enable` equals to true by default
+        setCharacteristicNotificationQueue(true);
     }
 
     public void onCharacteristicChanged(byte[] data)
@@ -307,9 +308,9 @@ public class BleManager
 
         // Init BLE Packet
         InitBlePacket initBlePacket = new InitBlePacket();
-        initBlePacket.setCmd((byte) 0);
-        initBlePacket.setHlen((byte) 0);
-        initBlePacket.setLlen((byte) 0);
+        initBlePacket.setType((byte) 0);
+        //initBlePacket.setHlen((byte) 0); // todo later...
+        //initBlePacket.setLlen((byte) 0); // todo later...
         initBlePacket.setData(new byte[Consts.DATA_LENGHT_PER_BLE_INIT_PACKET]);
         System.arraycopy(data, 0,
                          initBlePacket.getData(), 0,
@@ -322,7 +323,7 @@ public class BleManager
         for (int i = 1; i < totalPackets; i++)
         {
             SeqBlePacket seqBlePacket = new SeqBlePacket();
-            seqBlePacket.setSeq((byte) i);
+            //seqBlePacket.setSeq((byte) i); // todo later...
             seqBlePacket.setData(new byte[Consts.DATA_LENGHT_PER_BLE_SEQ_PACKET]);
 
             int srcPos = i * 19 - 2;
@@ -359,6 +360,8 @@ public class BleManager
 
     private void processReceivedData(byte[] data)
     {
+        Log.d(TAG, StringHelper.printByteArray(data));
+
         // todo later...
 
         if (mPackets.isEmpty())
@@ -375,14 +378,14 @@ public class BleManager
         }
 
         InitBlePacket initPackect  = (InitBlePacket) mPackets.get(0);
-        int           totalLen     = initPackect.calcTotalLen(initPackect.getHlen(), initPackect.getLlen());
+        int           totalLen     = initPackect.calcTotalLen(initPackect.getLength());
         int           totalPackets = BlePacket.calcTotalPacket(totalLen);
 
         if (mPackets.size() == totalPackets)
         {
             Log.d(TAG, "An APDU Packet received.");
 
-            if (initPackect.getCmd() == Consts.BLE_PACKET_CMD_EVENT)
+            if (initPackect.getType() == Consts.BLE_PACKET_TYPE_EVENT)
             {
                 // This is an Event
                 Log.d(TAG, "An event received.");
@@ -391,14 +394,14 @@ public class BleManager
                 ApduCommand command   = new ApduCommand();
                 command.pullFrom(totalData);
 
-                if (command.getIns() == (byte) 0x03)
+                if (command.getIns() == Consts.EVENT_SINGLE_CLICK)
                 {
                     // Standard Click
                     Log.d(TAG, "Standard Click");
 
                     Broadcaster.broadcastKey(App.getAppContext(), Consts.KEY_A);
                 }
-                else if (command.getIns() == (byte) 0x04)
+                else if (command.getIns() == Consts.EVENT_DOUBLE_CLICK)
                 {
                     // Long Click
                     Log.d(TAG, "Long Click");
@@ -415,7 +418,9 @@ public class BleManager
     private byte[] mergeData()
     {
         InitBlePacket initPackect = (InitBlePacket) mPackets.get(0);
-        int           totalLen    = initPackect.calcTotalLen(initPackect.getHlen(), initPackect.getLlen());
+        int           totalLen    = initPackect.calcTotalLen(initPackect.getLength());
+
+        Log.d(TAG, "Total Data Length: " + totalLen);
 
         byte[] totalData = new byte[totalLen];
 
@@ -432,6 +437,8 @@ public class BleManager
             );
         }
 
+        Log.d(TAG, "Total Data Length: " + totalData.length);
+
         return totalData;
     }
 
@@ -439,19 +446,24 @@ public class BleManager
      * Getters & Setters
      ***************************************************/
 
-    public BleState getBleState()
+    public boolean isConnected()
     {
         if (mBleService == null)
         {
-            return BleState.SLEEP;
+            return false;
         }
 
-        return mBleService.getBleState();
+        return mBleService.isConnected();
     }
 
-    public void setBleState(BleState bleState)
+    public void setConnected(boolean isConnected)
     {
-        mBleService.setBleState(bleState);
+        if (mBleService == null)
+        {
+            return;
+        }
+
+        mBleService.setConnected(isConnected);
     }
 
     public String getConnectedAddress()
@@ -461,7 +473,7 @@ public class BleManager
             return null;
         }
 
-        return mBleService.getConnectedAddress();
+        return mBleService.getTargetAddress();
     }
 
     public void setConnectedAddress(String connectedAddress)
@@ -471,7 +483,7 @@ public class BleManager
             return;
         }
 
-        mBleService.setConnectedAddress(connectedAddress);
+        mBleService.setTargetAddress(connectedAddress);
     }
 
     /****************************************************
@@ -491,6 +503,8 @@ public class BleManager
             {
                 // Broadcasted action
                 String action = intent.getAction();
+
+                Log.d(TAG, action);
 
                 // Bonding state
                 int state = intent.getIntExtra(
@@ -536,6 +550,34 @@ public class BleManager
                 {
                     onDescriptorWrite();
                 }
+                else if (action.equals(Consts.ACTION_DEFAULT_DEVICE_CHANGED))
+                {
+                    Log.d(TAG, "ACTION_DEFAULT_DEVICE_CHANGED");
+
+                    Device defaultDevice = DbManager.getDevice();
+
+                    if (defaultDevice != null)
+                    {
+                        if (isConnected())
+                        {
+                            disconnect();
+                            close();
+                            connect(defaultDevice.getAddress());
+                        }
+                        else
+                        {
+                            connect(defaultDevice.getAddress());
+                        }
+                    }
+                    else
+                    {
+                        if (isConnected())
+                        {
+                            disconnect();
+                            close();
+                        }
+                    }
+                }
 
                 /**
                  * Check bonding state
@@ -569,6 +611,16 @@ public class BleManager
                 {
                     // A device is connected
                     Log.d(TAG, "Device " + device + " is connected.");
+
+                    Device defaultDevice = DbManager.getDevice();
+
+                    if (defaultDevice != null)
+                    {
+                        if (!isConnected() && defaultDevice.getAddress().equals(device))
+                        {
+                            connect(defaultDevice.getAddress());
+                        }
+                    }
                 }
                 else if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action))
                 {
@@ -588,6 +640,7 @@ public class BleManager
         mFilter.addAction(Consts.ACTION_GATT_DESCRIPTOR_READ);
         mFilter.addAction(Consts.ACTION_GATT_DESCRIPTOR_WRITE);
         mFilter.addAction(Consts.ACTION_GATT_READ_REMOTE_RSSI);
+        mFilter.addAction(Consts.ACTION_DEFAULT_DEVICE_CHANGED);
 
         App.getAppContext().registerReceiver(mReceiver, mFilter);
     }

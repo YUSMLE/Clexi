@@ -2,6 +2,7 @@ package com.clexi.clexi.app;
 
 import android.content.Context;
 
+import com.clexi.clexi.bluetoothle.BleUtils;
 import com.clexi.clexi.model.access.DbManager;
 import com.orm.SugarApp;
 
@@ -26,6 +27,9 @@ public class App extends SugarApp
 
         // Set Context for BluetoothLE Framework
         // todo later...
+
+        // Start BleService
+        BleUtils.startBleService(mInstance);
     }
 
     public static Context getAppContext()

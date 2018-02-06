@@ -13,7 +13,9 @@ public class ApduCommand
     private byte   ins;
     private byte   p1;
     private byte   p2;
-    private byte   lc;
+    private byte   lc1;
+    private byte   lc2;
+    private byte   lc3;
     private byte[] data;
 
     // Optional
@@ -24,13 +26,15 @@ public class ApduCommand
         // Nothing
     }
 
-    public ApduCommand(byte cla, byte ins, byte p1, byte p2, byte lc, byte[] data)
+    public ApduCommand(byte cla, byte ins, byte p1, byte p2, byte lc1, byte lc2, byte lc3, byte[] data)
     {
         this.cla = cla;
         this.ins = ins;
         this.p1 = p1;
         this.p2 = p2;
-        this.lc = lc;
+        this.lc1 = lc1;
+        this.lc2 = lc2;
+        this.lc3 = lc3;
         this.data = data;
     }
 
@@ -40,23 +44,27 @@ public class ApduCommand
         ins = apduData[1];
         p1 = apduData[2];
         p2 = apduData[3];
-        lc = apduData[4];
-        data = new byte[lc & 0xFF];
+        lc1 = apduData[4];
+        lc2 = apduData[5];
+        lc3 = apduData[6];
+        //data = new byte[lc & 0xFF]; //todo later...
 
-        System.arraycopy(apduData, 5, data, 0, lc & 0xFF);
+        //System.arraycopy(apduData, 5, data, 0, lc & 0xFF); // todo later...
     }
 
     public byte[] pushTo()
     {
-        byte[] apduData = new byte[data.length + 5];
+        byte[] apduData = new byte[data.length + 7];
 
         apduData[0] = cla;
         apduData[1] = ins;
         apduData[2] = p1;
         apduData[3] = p2;
-        apduData[4] = lc;
+        apduData[4] = lc1;
+        apduData[5] = lc2;
+        apduData[6] = lc3;
 
-        System.arraycopy(data, 0, apduData, 5, data.length);
+        System.arraycopy(data, 0, apduData, 7, data.length);
 
         return apduData;
     }
@@ -105,14 +113,34 @@ public class ApduCommand
         this.p2 = p2;
     }
 
-    public byte getLc()
+    public byte getLc1()
     {
-        return lc;
+        return lc1;
     }
 
-    public void setLc(byte lc)
+    public void setLc1(byte lc1)
     {
-        this.lc = lc;
+        this.lc1 = lc1;
+    }
+
+    public byte getLc2()
+    {
+        return lc2;
+    }
+
+    public void setLc2(byte lc2)
+    {
+        this.lc2 = lc2;
+    }
+
+    public byte getLc3()
+    {
+        return lc3;
+    }
+
+    public void setLc3(byte lc3)
+    {
+        this.lc3 = lc3;
     }
 
     public byte[] getData()

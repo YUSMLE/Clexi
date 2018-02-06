@@ -15,23 +15,23 @@ public abstract class BlePacket
 
     public abstract byte[] pushTo();
 
-    public int calcTotalLen(byte hlen, byte llen)
+    public int calcTotalLen(byte[] length)
     {
-        return (int) (hlen << 8 | llen);
+        return (int) (length[0] << 16 | length[1] << 8 | length[2]);
     }
 
     public static int calcTotalPacket(int totalLen)
     {
-        if (totalLen <= 17)
+        if (totalLen <= 16)
         {
             return 1;
         }
 
-        if ((totalLen - 17) % 19 == 0)
+        if ((totalLen - 16) % 17 == 0)
         {
-            return (totalLen - 17) / 19 + 1;
+            return (totalLen - 16) / 17 + 1;
         }
 
-        return (totalLen - 17) / 19 + 2;
+        return (totalLen - 16) / 17 + 2;
     }
 }
