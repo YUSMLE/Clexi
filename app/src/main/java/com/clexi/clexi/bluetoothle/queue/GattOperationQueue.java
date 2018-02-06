@@ -1,5 +1,7 @@
 package com.clexi.clexi.bluetoothle.queue;
 
+import com.clexi.clexi.bluetoothle.BleManager;
+
 import java.util.LinkedList;
 import java.util.Queue;
 
@@ -58,15 +60,15 @@ public class GattOperationQueue
         switch (gattOperation.type)
         {
             case ReadCharacteristic:
-                //BleManager.getInstance().readCharacteristic(gattOperation.characteristic);
+                BleManager.getInstance().readCharacteristic(gattOperation.characteristic);
                 break;
 
             case WriteCharacteristic:
-                //BleManager.getInstance().writeCharacteristic(gattOperation.characteristic, gattOperation.dataToWrite);
+                BleManager.getInstance().writeCharacteristic(gattOperation.characteristic, gattOperation.dataToWrite);
                 break;
 
             case SubscribeCharacteristicNotification:
-                //BleManager.getInstance().setCharacteristicNotification(gattOperation.characteristic, gattOperation.enabled);
+                BleManager.getInstance().setCharacteristicNotification(gattOperation.characteristic, gattOperation.enabled);
         }
     }
 

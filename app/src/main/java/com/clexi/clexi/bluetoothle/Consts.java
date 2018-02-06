@@ -21,9 +21,9 @@ public class Consts
      * UUIDs
      ***************************************************/
 
-    public static final UUID UUID_SERVICE        = UUID.fromString("321d1e00-e0f8-7eab-e74e-29b7e0855737");
-    public static final UUID UUID_CHARACTERISTIC = UUID.fromString("321d1e01-e0f8-7eab-e74e-29b7e0855737");
-    public static final UUID UUID_NOTIFICATION   = UUID.fromString("321d1e02-e0f8-7eab-e74e-29b7e0855737");
+    public static final UUID UUID_SERVICE        = UUID.fromString("b36e1e00-4b56-3886-4c48-f903401b31f8");
+    public static final UUID UUID_CHARACTERISTIC = UUID.fromString("b36e1e01-4b56-3886-4c48-f903401b31f8");
+    public static final UUID UUID_NOTIFICATION   = UUID.fromString("b36e1e02-4b56-3886-4c48-f903401b31f8");
     public static final UUID UUID_DESCRIPTOR     = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     /****************************************************
@@ -41,6 +41,8 @@ public class Consts
 
     public static final String ACTION_GATT_SCAN_CALLBACK = "ACTION_GATT_SCAN_CALLBACK";
 
+    public static final String ACTION_DEFAULT_DEVICE_CHANGED = "ACTION_DEFAULT_DEVICE_CHANGED";
+
     public static final String ACTION_LOGIN_REQUEST = "ACTION_LOGIN_REQUEST";   /*KEY_A*/
     public static final String ACTION_MANAGEMENT    = "ACTION_MANAGEMENT";      /*KEY_B*/
 
@@ -55,18 +57,27 @@ public class Consts
     // todo later...
 
     /****************************************************
-     * BLUETOOTH PACKET CMD
+     * BLUETOOTH PACKET TYPEs
      ***************************************************/
 
-    public static final byte BLE_PACKET_CMD_EVENT = (byte) 0xC3;
+    public static final byte BLE_PACKET_TYPE_EVENT            = (byte) 0xC3;
+    public static final byte BLE_PACKET_TYPE_PASSWORD_MANAGER = (byte) 0xD0;
+    public static final byte BLE_PACKET_TYPE_BRIDGE_INFO      = (byte) 0xC5;
+    public static final byte BLE_PACKET_TYPE_BRIDGE_CONFIG    = (byte) 0xC6;
+
+    public static final byte EVENT_SINGLE_CLICK = (byte) 0x10;
+    public static final byte EVENT_LONG_CLICK   = (byte) 0x20;
+    public static final byte EVENT_DOUBLE_CLICK = (byte) 0x30;
+    public static final byte EVENT_SAY_HELLO    = (byte) 0x40;
+    public static final byte EVENT_WALKING      = (byte) 0x50;
 
     /****************************************************
      * LENGHTS
      ***************************************************/
 
     public static final int TOTAL_BLE_PACKET_LENGHT         = 20;
-    public static final int DATA_LENGHT_PER_BLE_INIT_PACKET = 17;
-    public static final int DATA_LENGHT_PER_BLE_SEQ_PACKET  = 19;
+    public static final int DATA_LENGHT_PER_BLE_INIT_PACKET = 16;
+    public static final int DATA_LENGHT_PER_BLE_SEQ_PACKET  = 17;
 
     public static final int MINIMUM_RSSI_POWER_FOR_SEARCH = -50;
 

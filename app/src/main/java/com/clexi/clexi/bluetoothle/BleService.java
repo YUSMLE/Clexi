@@ -19,6 +19,9 @@ import android.os.IBinder;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
+import com.clexi.clexi.model.access.DbManager;
+import com.clexi.clexi.model.object.Device;
+
 import java.util.List;
 
 /**
@@ -52,8 +55,8 @@ public class BleService extends Service
     private Scanner mScanner;
 
     /*BLUETOTH LE CONNECTION STATES*/
-    private BleState mBleState;
-    private String   mConnectedAddress;
+    private boolean mIsConnected;
+    private String  mTargetAddress;
 
     /*Listening for bluetooth state changes*/
     private BluetoothStateChangesReceiver mBluetoothStateReceiver;
@@ -78,6 +81,8 @@ public class BleService extends Service
     @Override
     public int onStartCommand(Intent intent, int flags, int startId)
     {
+        Log.d(TAG, "onStartCommand()");
+
         BleService.mInstance = this;
 
         // Register BluetoothStateChangeReceiver
@@ -90,6 +95,9 @@ public class BleService extends Service
 
         /** In the name of 'GOD' */
         start();
+
+        // Init BleManager
+        BleManager.getInstance();
 
         // Return START_STICKY for start again service in background when application killed by OS
         return Service.START_STICKY;
@@ -222,6 +230,9 @@ public class BleService extends Service
      */
     public boolean connect(String address)
     {
+        // Set the address as target address
+        mTargetAddress = address;
+
         try
         {
             if (mAdapter == null || address == null)
@@ -235,7 +246,7 @@ public class BleService extends Service
             }
 
             // Previously connected device? Try to reconnect.
-            if (mConnectedAddress != null && mConnectedAddress.equals(address) && mGatt != null)
+            if (mTargetAddress != null && mTargetAddress.equals(address) && mGatt != null)
             {
                 if (debug)
                 {
@@ -304,7 +315,7 @@ public class BleService extends Service
             }
 
             // Previously connected device? Try to reconnect.
-            if (mConnectedAddress != null && mConnectedAddress.equals(device.getAddress()) && mGatt != null)
+            if (mTargetAddress != null && mTargetAddress.equals(device.getAddress()) && mGatt != null)
             {
                 if (debug)
                 {
@@ -475,6 +486,8 @@ public class BleService extends Service
             BluetoothGattDescriptor descriptor = characteristic.getDescriptor(Consts.UUID_DESCRIPTOR);
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
             mGatt.writeDescriptor(descriptor);
+
+            Log.d(TAG, "setCharacteristicNotification()");
         }
         catch (Exception e)
         {
@@ -559,10 +572,18 @@ public class BleService extends Service
                 {
                     if (initAdapter())
                     {
-                        // If previous state == SLEEP, setBleState() will reject the call,
-                        // so work around it...
-                        mBleState = BleState.STANDBY;
-                        setBleState(BleState.SCANNING);
+                        // Get the default device and try to connect to it
+                        Device defaultDevice = DbManager.getDevice();
+
+                        if (defaultDevice != null)
+                        {
+                            Log.d(TAG, "Try to connect to default device");
+
+                            // Set the address of default device as target address
+                            mTargetAddress = defaultDevice.getAddress();
+
+                            connect(mTargetAddress);
+                        }
                     }
                     else
                     {
@@ -599,43 +620,6 @@ public class BleService extends Service
         mGattCallback = null;
     }
 
-    private void manageBleState()
-    {
-        if (debug)
-        {
-            Log.d(TAG, "manageBleState()");
-        }
-
-        if (mBleState.equals(BleState.SEARCHING))
-        {
-            stopScanning();
-            scan();
-        }
-        else if (mBleState.equals(BleState.SCANNING))
-        {
-            stopScanning();
-            scan();
-        }
-        else if (mBleState.equals(BleState.CONNECTED))
-        {
-            stopScanning();
-
-            // Set connected address
-            mConnectedAddress = mGatt.getDevice().getAddress();
-        }
-        else if (mBleState.equals(BleState.STANDBY))
-        {
-            stopScanning();
-        }
-        else
-        {
-            if (debug)
-            {
-                Log.d(TAG, "Unexpected situtation!");
-            }
-        }
-    }
-
     private void scan()
     {
         if (debug)
@@ -643,22 +627,7 @@ public class BleService extends Service
             Log.d(TAG, "scan()");
         }
 
-        if (mBleState.equals(BleState.SEARCHING))
-        {
-            mScanner = Scanner.getInstance().setScanner(mAdapter);
-            mScanner.start();
-        }
-        else if (mBleState.equals(BleState.SCANNING))
-        {
-            // todo later...
-
-            mScanner = Scanner.getInstance().setScanner(mAdapter);
-            mScanner.start();
-        }
-        else
-        {
-            setBleState(BleState.STANDBY);
-        }
+        // todo later...
     }
 
     private void stopScanning()
@@ -702,38 +671,26 @@ public class BleService extends Service
      * GETTERS & SETTERS
      ***************************************************/
 
-    public BleState getBleState()
+    public boolean isConnected()
     {
-        return mBleState;
+        return mIsConnected;
     }
 
-    public void setBleState(BleState bleState)
+    public void setConnected(boolean isConnected)
     {
-        if (mBleState.equals(BleState.SLEEP))
-        {
-            return; // Bluetooth is off, so impossible to change state!
-        }
-
-        if (mBleState.equals(bleState))
-        {
-            return; // We are allready in same state!
-        }
-
-        mBleState = bleState;
-
-        manageBleState();
+        mIsConnected = isConnected;
     }
 
-    public String getConnectedAddress()
+    public String getTargetAddress()
     {
         // todo later...
 
-        return mConnectedAddress;
+        return mTargetAddress;
     }
 
-    public void setConnectedAddress(String connectedAddress)
+    public void setTargetAddress(String targetAddress)
     {
-        mConnectedAddress = connectedAddress;
+        mTargetAddress = targetAddress;
     }
 
     public BluetoothGatt getGatt()
