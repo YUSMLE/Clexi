@@ -13,6 +13,8 @@ import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.util.Log;
 
+import com.clexi.clexi.helper.Utils;
+
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
@@ -165,6 +167,15 @@ public class BleUtils
             // or can't get device from it.
 
             // todo later...
+        }
+    }
+
+    public static void startBleService(Context context)
+    {
+        // Start BleService, if it's not
+        if (!Utils.isMyServiceRunning(context, BleService.class))
+        {
+            BleService.startService(context);
         }
     }
 }

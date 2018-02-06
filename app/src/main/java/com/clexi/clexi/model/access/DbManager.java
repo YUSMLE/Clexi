@@ -4,6 +4,7 @@ package com.clexi.clexi.model.access;
 import android.content.Context;
 
 import com.clexi.clexi.model.object.Account;
+import com.clexi.clexi.model.object.Device;
 import com.orm.SugarContext;
 
 import java.util.List;
@@ -58,7 +59,7 @@ public class DbManager
         item.save();
     }
 
-    // Get the item id
+    // Get the item by id
     public static Account findAccountById(long id)
     {
         Account item = Account.findById(Account.class, id);
@@ -140,7 +141,32 @@ public class DbManager
      * MANAGE DEVICES
      ***************************************************/
 
-    // Nothing
+    // Get the item
+    public static Device getDevice()
+    {
+        List<Device> items = Device.listAll(Device.class);
+
+        if (items != null && items.size() > 0)
+        {
+            return items.get(0);
+        }
+
+        return null;
+    }
+
+    // Set the device
+    public static void setDevice(Device item)
+    {
+        // Delete already existing device
+        deleteAllDevices();
+
+        item.save();
+    }
+
+    public static void deleteAllDevices()
+    {
+        Device.deleteAll(Device.class);
+    }
 
     /****************************************************
      * MANAGE SETTINGS

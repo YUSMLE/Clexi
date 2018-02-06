@@ -14,6 +14,8 @@ import android.view.View;
 
 import com.clexi.clexi.R;
 import com.clexi.clexi.bluetoothle.BleUtils;
+import com.clexi.clexi.model.access.DbManager;
+import com.clexi.clexi.model.object.Device;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -220,6 +222,8 @@ public class ConnectionSettingsActivity extends BaseActivity
                 mFoundDevices,
                 callback
         );
+        Device defaultDevice = DbManager.getDevice();
+        mConnectionSettingsAdapter.setDefaultDevice(defaultDevice);
 
         mDeviceList.setAdapter(mConnectionSettingsAdapter);
 

@@ -45,7 +45,8 @@
                 android:paddingRight="8dp"
                 android:text="Clexi"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/text_01"/>
+                android:textColor="@color/text_01"
+                android:textSize="13dp"/>
 
             <TextView
                 android:id="@+id/subtitle"
@@ -58,11 +59,13 @@
                 android:paddingRight="8dp"
                 android:text="88.12.34.56"
                 android:textAppearance="?android:attr/textAppearanceMedium"
-                android:textColor="@color/textLow"/>
+                android:textColor="@color/textLow"
+                android:textSize="11dp"/>
         </LinearLayout>
 
         <Button
             android:id="@+id/pair"
+            style="@android:style/Widget.Material.Button.Borderless.Colored"
             android:layout_width="70dp"
             android:layout_height="match_parent"
             android:layout_marginRight="16dp"
