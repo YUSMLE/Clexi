@@ -11,7 +11,7 @@ public class SeqBlePacket extends BlePacket
 
     public static final String TAG = SeqBlePacket.class.getSimpleName();
 
-    private byte   seq;
+    private byte[] seq; // 3 bytes
     private byte[] data;
 
     public SeqBlePacket()
@@ -19,7 +19,7 @@ public class SeqBlePacket extends BlePacket
         // Nothing
     }
 
-    public SeqBlePacket(byte seq, byte[] data)
+    public SeqBlePacket(byte[] seq, byte[] data)
     {
         this.seq = seq;
         this.data = data;
@@ -28,10 +28,10 @@ public class SeqBlePacket extends BlePacket
     @Override
     public void pullFrom(byte[] packetData)
     {
-        seq = packetData[0];
+        seq = new byte[3];
+        System.arraycopy(packetData, 0, seq, 0, 3);
         data = new byte[Consts.DATA_LENGHT_PER_BLE_SEQ_PACKET];
-
-        System.arraycopy(packetData, 1, data, 0, Consts.DATA_LENGHT_PER_BLE_SEQ_PACKET);
+        System.arraycopy(packetData, 3, data, 0, Consts.DATA_LENGHT_PER_BLE_SEQ_PACKET);
     }
 
     @Override
@@ -39,9 +39,8 @@ public class SeqBlePacket extends BlePacket
     {
         byte[] packetData = new byte[Consts.TOTAL_BLE_PACKET_LENGHT];
 
-        packetData[0] = seq;
-
-        System.arraycopy(data, 0, packetData, 1, Consts.DATA_LENGHT_PER_BLE_SEQ_PACKET);
+        System.arraycopy(seq, 0, packetData, 0, 3);
+        System.arraycopy(data, 0, packetData, 3, Consts.DATA_LENGHT_PER_BLE_SEQ_PACKET);
 
         return packetData;
     }
@@ -50,12 +49,12 @@ public class SeqBlePacket extends BlePacket
      * Getters & Setters
      ***************************************************/
 
-    public byte getSeq()
+    public byte[] getSeq()
     {
         return seq;
     }
 
-    public void setSeq(byte seq)
+    public void setSeq(byte[] seq)
     {
         this.seq = seq;
     }

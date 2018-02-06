@@ -22,4 +22,5 @@
     <!-- Backgrounds -->
     <color name="background_01">#F7F7F7</color>
     <color name="background_02">#00BCD4</color>
+    <color name="background_03">#DEDEDE</color>
 </resources>

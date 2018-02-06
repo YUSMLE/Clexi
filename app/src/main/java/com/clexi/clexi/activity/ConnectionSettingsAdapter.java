@@ -14,6 +14,11 @@ import android.widget.Switch;
 import android.widget.TextView;
 
 import com.clexi.clexi.R;
+import com.clexi.clexi.app.App;
+import com.clexi.clexi.bluetoothle.Consts;
+import com.clexi.clexi.helper.Broadcaster;
+import com.clexi.clexi.model.access.DbManager;
+import com.clexi.clexi.model.object.Device;
 
 import java.util.List;
 
@@ -41,7 +46,10 @@ public class ConnectionSettingsAdapter extends RecyclerView.Adapter<RecyclerView
     private Context                            mContext;
     private List<BluetoothDevice>              mPairedDevices;
     private List<BluetoothDevice>              mFoundDevices;
+    private Device                             mDefaultDevice;
     private ConnectionSettingsAdapter.Callback mCallback;
+
+    private Boolean isCheckedProgramatically = false;
 
     /****************************************************
      * Provide a suitable constructor (depends on the kind of dataset)
@@ -145,6 +153,15 @@ public class ConnectionSettingsAdapter extends RecyclerView.Adapter<RecyclerView
     private void configureViewHolder0(ViewHolder0 holder, int position)
     {
         holder.title.setText("Paired Clexies");
+
+        if (mPairedDevices == null || mPairedDevices.size() == 0)
+        {
+            holder.message.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            holder.message.setVisibility(View.GONE);
+        }
     }
 
     // Init View TYPE_FOUND_DEVICE_LABEL
@@ -160,10 +177,19 @@ public class ConnectionSettingsAdapter extends RecyclerView.Adapter<RecyclerView
                 // todo later...
             }
         });
+
+        if (mFoundDevices == null || mFoundDevices.size() == 0)
+        {
+            holder.message.setVisibility(View.VISIBLE);
+        }
+        else
+        {
+            holder.message.setVisibility(View.GONE);
+        }
     }
 
     // Init View TYPE_PAIRED_DEVICE
-    private void configureViewHolder2(ViewHolder2 holder, int position)
+    private void configureViewHolder2(final ViewHolder2 holder, final int position)
     {
         holder.icon.setImageResource(R.mipmap.ic_launcher);
 
@@ -171,12 +197,36 @@ public class ConnectionSettingsAdapter extends RecyclerView.Adapter<RecyclerView
 
         holder.subtitle.setText(mPairedDevices.get(position - 1).getAddress());
 
-        holder.setAsDefault.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+        if (mDefaultDevice != null && mPairedDevices.get(position - 1).getAddress().equals(mDefaultDevice.getAddress()))
+        {
+            holder.setAsDefault.setChecked(true);
+        }
+        else
+        {
+            holder.setAsDefault.setChecked(false);
+        }
+
+        holder.setAsDefault.setOnClickListener(new CompoundButton.OnClickListener()
         {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            public void onClick(View v)
             {
-                // todo later...
+                if (holder.setAsDefault.isChecked())
+                {
+                    int selectedDevicePos = position - 1;
+                    Device selectedDevice = new Device(
+                            mPairedDevices.get(selectedDevicePos).getName(),
+                            mPairedDevices.get(selectedDevicePos).getAddress()
+                    );
+                    DbManager.setDevice(selectedDevice);
+                    mDefaultDevice = selectedDevice;
+                    notifyDataSetChanged();
+                    Broadcaster.broadcast(App.getAppContext(), Consts.ACTION_DEFAULT_DEVICE_CHANGED);
+                }
+                else
+                {
+                    DbManager.deleteAllDevices();
+                }
             }
         });
     }
@@ -256,6 +306,12 @@ public class ConnectionSettingsAdapter extends RecyclerView.Adapter<RecyclerView
         mCallback.onSelect(item);
     }
 
+    public void setDefaultDevice(Device defaultDevice)
+    {
+        mDefaultDevice = defaultDevice;
+
+    }
+
     /****************************************************
      * Provide a reference to the views for each data item
      * Complex data items may need more than one view per item, and
@@ -267,6 +323,7 @@ public class ConnectionSettingsAdapter extends RecyclerView.Adapter<RecyclerView
     {
         @BindView(R.id.rootLayout) ViewGroup rootLayout;
         @BindView(R.id.title)      TextView  title;
+        @BindView(R.id.message)    TextView  message;
 
         public ViewHolder0(View view)
         {
@@ -284,7 +341,8 @@ public class ConnectionSettingsAdapter extends RecyclerView.Adapter<RecyclerView
     {
         @BindView(R.id.rootLayout) ViewGroup   rootLayout;
         @BindView(R.id.title)      TextView    title;
-        @BindView(R.id.search)       ImageButton search;
+        @BindView(R.id.search)     ImageButton search;
+        @BindView(R.id.message)    TextView    message;
 
         public ViewHolder1(View view)
         {

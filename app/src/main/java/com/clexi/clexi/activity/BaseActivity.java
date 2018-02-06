@@ -97,7 +97,7 @@ public class BaseActivity extends AppCompatActivity
         super.onResume();
 
         // Bind to BleService, again
-        bindToBleService();
+        //bindToBleService();
     }
 
     @Override
@@ -112,7 +112,7 @@ public class BaseActivity extends AppCompatActivity
         super.onStop();
 
         // Unbind from BleService for prevent of memory leak
-        unbindFromService();
+        //unbindFromService();
     }
 
     @Override
@@ -173,7 +173,7 @@ public class BaseActivity extends AppCompatActivity
     protected void startBleService()
     {
         // Start BleService, if it's not
-        if (Utils.isMyServiceRunning(getApplicationContext(), BleService.class))
+        if (!Utils.isMyServiceRunning(getApplicationContext(), BleService.class))
         {
             BleService.startService(getApplicationContext());
         }
