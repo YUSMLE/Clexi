@@ -45,7 +45,7 @@ public class DbManager
                 "com.gmail",
                 "gmail.com",
                 "behfar01",
-                "gmail123456789",
+                "497cfc124",
                 "This is an important credential."
         ));
         DbManager.createAccount(new Account(
@@ -53,7 +53,7 @@ public class DbManager
                 "com.outlook",
                 "login.live.com",
                 "jbehfar",
-                "outlook123456789",
+                "497cfc124",
                 "This is an important credential."
         ));
         DbManager.createAccount(new Account(
@@ -61,14 +61,14 @@ public class DbManager
                 "com.reyhoon",
                 "reyhoon.com",
                 "09168793240",
-                "reyhoon123456789",
+                "reyhoon",
                 "This is an important credential."
         ));
         DbManager.createAccount(new Account(
                 "Digikala",
                 "com.digikala",
                 "digikala.com",
-                "digikala01@gmail.com",
+                "jgharanjik@gmail.com",
                 "digikala123456789",
                 "This is an important credential."
         ));
@@ -76,8 +76,8 @@ public class DbManager
                 "Facebook - Yousef",
                 "com.facebook",
                 "m.facebook.com",
-                "yusmle",
-                "yusmle123456789",
+                "yusmle@yahoo.com",
+                "497cfc124",
                 "This is an important credential."
         ));
         DbManager.createAccount(new Account(
