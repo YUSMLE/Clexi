@@ -75,7 +75,7 @@ public class MainActivity extends BaseActivity
         bindViews();
 
         // Test with simulator
-        startService(new Intent(MainActivity.this, FlyingFOB.class));
+        //startService(new Intent(MainActivity.this, FlyingFOB.class));
     }
 
     @Override
