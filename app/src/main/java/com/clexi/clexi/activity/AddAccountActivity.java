@@ -416,7 +416,7 @@ public class AddAccountActivity extends BaseActivity
             public void onClick(View v)
             {
                 Intent intent = new Intent(AddAccountActivity.this, AppChooserActivity.class);
-                startActivityForResult(intent, 4231);
+                startActivityForResult(intent, Consts.REQUEST_CHOOSE_APPLICATION);
             }
         });
 
@@ -426,7 +426,7 @@ public class AddAccountActivity extends BaseActivity
             public void onClick(View v)
             {
                 Intent intent = new Intent(AddAccountActivity.this, AppChooserActivity.class);
-                startActivityForResult(intent, 4231);
+                startActivityForResult(intent, Consts.REQUEST_CHOOSE_APPLICATION);
             }
         });
 
@@ -436,7 +436,7 @@ public class AddAccountActivity extends BaseActivity
             public void onClick(View v)
             {
                 Intent i = new Intent(AddAccountActivity.this, PasswordGeneratorActivity.class);
-                startActivityForResult(i, 1234);
+                startActivityForResult(i, Consts.REQUEST_GENERATE_PASSWORD);
             }
         });
 
