@@ -40,14 +40,86 @@ public class DbManager
             return;
         }
 
-        for (int i = 0; i < 4; i++)
-        {
-            DbManager.createAccount(new Account("Saderat", "ir.saderat", "bsi.ir", "sun123", "spw123", "This is an important credential."));
-            DbManager.createAccount(new Account("Samen", "ir.samen", "samen.ir", "sun123", "spw123", "This is an important credential."));
-            DbManager.createAccount(new Account("Gmail", "com.google.mail", "gmail.com", "gun123", "gpw123", "This is an important credential."));
-            DbManager.createAccount(new Account("Facebook", "com.facebook", "facebook.com", "fun123", "fpw123", "This is an important credential."));
-            DbManager.createAccount(new Account("Amazon", "com.amazon", "amazon.com", "aun123", "apw123", "This is an important credential."));
-        }
+        DbManager.createAccount(new Account(
+                "Gmail",
+                "com.gmail",
+                "gmail.com",
+                "behfar01",
+                "gmail123456789",
+                "This is an important credential."
+        ));
+        DbManager.createAccount(new Account(
+                "Outlook",
+                "com.outlook",
+                "login.live.com",
+                "jbehfar",
+                "outlook123456789",
+                "This is an important credential."
+        ));
+        DbManager.createAccount(new Account(
+                "Reyhoon",
+                "com.reyhoon",
+                "reyhoon.com",
+                "09168793240",
+                "reyhoon123456789",
+                "This is an important credential."
+        ));
+        DbManager.createAccount(new Account(
+                "Digikala",
+                "com.digikala",
+                "digikala.com",
+                "digikala01@gmail.com",
+                "digikala123456789",
+                "This is an important credential."
+        ));
+        DbManager.createAccount(new Account(
+                "Facebook - Yousef",
+                "com.facebook",
+                "m.facebook.com",
+                "yusmle",
+                "yusmle123456789",
+                "This is an important credential."
+        ));
+        DbManager.createAccount(new Account(
+                "Facebook - Mani",
+                "com.facebook",
+                "m.facebook.com",
+                "mani",
+                "yusmle123456789",
+                "This is an important credential."
+        ));
+        DbManager.createAccount(new Account(
+                "Facebook - Mana",
+                "com.facebook",
+                "m.facebook.com",
+                "mana",
+                "yusmle123456789",
+                "This is an important credential."
+        ));
+        DbManager.createAccount(new Account(
+                "Varzesh3",
+                "com.varzesh3",
+                "account.varzesh3.com",
+                "behfar",
+                "behfar123456789",
+                "This is an important credential."
+        ));
+        DbManager.createAccount(new Account(
+                "Varzesh3 - Seyfi",
+                "com.varzesh3",
+                "account.varzesh3.com",
+                "hasan_seyfi",
+                "hasan123456789",
+                "This is an important credential."
+        ));
+        DbManager.createAccount(new Account(
+                "Bamilo Account",
+                "com.bamilo",
+                "bamilo.com",
+                "faranak",
+                "HRM123456789",
+                "This is an important credential."
+        ));
     }
 
     /****************************************************
