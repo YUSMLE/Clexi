@@ -263,6 +263,16 @@ public class MainActivity extends BaseActivity
         startActivityForResult(intent, Consts.REQUEST_ADD_EDIT_DELETE_ACCOUNT);
     }
 
+    private void goToViewAccount(long accountId)
+    {
+        Intent intent = new Intent(MainActivity.this, AccountDetailsActivity.class);
+        intent.putExtra(Consts.ACCOUNT_ID, accountId);
+        // With this below code, the second activity return result immediatelly!
+        // So, I commented it for now.
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+        startActivityForResult(intent, Consts.REQUEST_ADD_EDIT_DELETE_ACCOUNT);
+    }
+
     private void goToConnectionSettings()
     {
         Intent intent = new Intent(MainActivity.this, ConnectionSettingsActivity.class);
@@ -282,7 +292,7 @@ public class MainActivity extends BaseActivity
                         if (item.getItemId() == R.id.menu_details)
                         {
                             // Go to AccountDetailsActivity
-                            // todo later...
+                            goToViewAccount(account.getId());
                         }
                         else if (item.getItemId() == R.id.menu_edit)
                         {

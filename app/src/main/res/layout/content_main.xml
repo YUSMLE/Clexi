@@ -13,28 +13,10 @@
     tools:context=".activity.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <com.sothree.slidinguppanel.SlidingUpPanelLayout
-        xmlns:sothree="http://schemas.android.com/apk/res-auto"
-        android:id="@+id/slidingLayout"
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/accountList"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:gravity="bottom"
-        sothree:umanoPanelHeight="50dp"
-        sothree:umanoShadowHeight="5dp">
-
-        <include
-            android:id="@+id/fixedView"
-            layout="@layout/content_main_fixed_view"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"/>
-
-        <include
-            android:id="@+id/slidingView"
-            layout="@layout/content_main_sliding_view"
-            android:layout_width="match_parent"
-            android:layout_height="200dp"
-            android:gravity="center"
-            android:visibility="gone"/>
-    </com.sothree.slidinguppanel.SlidingUpPanelLayout>
+        android:scrollbars="vertical"
+        tools:listitem="@layout/item_account"/>
 </RelativeLayout>
