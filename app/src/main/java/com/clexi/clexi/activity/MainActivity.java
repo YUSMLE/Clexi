@@ -15,10 +15,13 @@ import android.view.View;
 
 import com.clexi.clexi.R;
 import com.clexi.clexi.app.Consts;
+import com.clexi.clexi.bluetoothle.BleManager;
+import com.clexi.clexi.bluetoothle.object.ApduCommand;
 import com.clexi.clexi.dialog.ConfirmDialog;
 import com.clexi.clexi.dialog.FlyingFOB;
 import com.clexi.clexi.model.access.DbManager;
 import com.clexi.clexi.model.object.Account;
+import com.clexi.clexi.test.TestCommands;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetMenuDialog;
 import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
@@ -217,7 +220,27 @@ public class MainActivity extends BaseActivity
             public void onClick(View view)
             {
                 // Add new empty account
-                goToAddAccount();
+                //goToAddAccount();
+
+                // TEST
+                // Request Battery Level
+                ApduCommand command = TestCommands.requestBatteryLevel();
+                if (BleManager.getInstance().isConnected())
+                {
+                    BleManager.getInstance().transmitBlePacketData(com.clexi.clexi.bluetoothle.Consts.UUID_CHARACTERISTIC_CLEXI_REQUEST, new byte[] {
+                            (byte) 0xC0,
+                            (byte) 0x00,
+                            (byte) 0x00,
+                            (byte) 0x07,
+                            (byte) 0x00,
+                            (byte) 0x20,
+                            (byte) 0x00,
+                            (byte) 0x00,
+                            (byte) 0x00,
+                            (byte) 0x00,
+                            (byte) 0x00
+                    });
+                }
             }
         });
 
