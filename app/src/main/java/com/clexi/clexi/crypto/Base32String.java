@@ -1,4 +1,4 @@
-package com.vancosys.vancokey_fido2.helper;
+package com.clexi.clexi.crypto;
 
 import java.util.HashMap;
 import java.util.Locale;
@@ -144,8 +144,8 @@ public class Base32String
             throw new IllegalArgumentException();
         }
 
-        int outputLength        = (data.length * 8 + SHIFT - 1) / SHIFT;
-        StringBuilder result    = new StringBuilder(outputLength);
+        int           outputLength = (data.length * 8 + SHIFT - 1) / SHIFT;
+        StringBuilder result       = new StringBuilder(outputLength);
 
         int buffer   = data[0];
         int next     = 1;
