@@ -21,10 +21,12 @@ public class Consts
      * UUIDs
      ***************************************************/
 
-    public static final UUID UUID_SERVICE        = UUID.fromString("b36e1e00-4b56-3886-4c48-f903401b31f8");
-    public static final UUID UUID_CHARACTERISTIC = UUID.fromString("b36e1e01-4b56-3886-4c48-f903401b31f8");
-    public static final UUID UUID_NOTIFICATION   = UUID.fromString("b36e1e02-4b56-3886-4c48-f903401b31f8");
-    public static final UUID UUID_DESCRIPTOR     = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
+    public static final UUID UUID_SERVICE                             = UUID.fromString("b36e1e00-4b56-3886-4c48-f903401b31f8");
+    public static final UUID UUID_CHARACTERISTIC_CLEXI_REQUEST        = UUID.fromString("b36e1e01-4b56-3886-4c48-f903401b31f8"); // [WRITE]
+    public static final UUID UUID_CHARACTERISTIC_CLEXI_RESPONSE       = UUID.fromString("b36e1e02-4b56-3886-4c48-f903401b31f8"); // [READ, NOTIFY]
+    public static final UUID UUID_CHARACTERISTIC_CLEXI_WALKING_STATUS = UUID.fromString("b36e1e03-4b56-3886-4c48-f903401b31f8"); // [READ]
+    public static final UUID UUID_CHARACTERISTIC_CLEXI_EVENT          = UUID.fromString("b36e1e04-4b56-3886-4c48-f903401b31f8"); // [READ, NOTIFY]
+    public static final UUID UUID_DESCRIPTOR                          = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb");
 
     /****************************************************
      * ACTIONS

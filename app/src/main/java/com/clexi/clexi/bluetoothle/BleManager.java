@@ -23,6 +23,7 @@ import com.clexi.clexi.model.access.DbManager;
 import com.clexi.clexi.model.object.Device;
 
 import java.util.ArrayList;
+import java.util.UUID;
 
 /**
  * Created by Yousef on 8/23/2017.
@@ -56,14 +57,14 @@ public class BleManager
         mQueue.addToQueue(mQueueItem);
     }
 
-    public void writeCharacteristicQueue(byte[] dataToWrite)
+    public void writeCharacteristicQueue(UUID characteristicUuid, byte[] dataToWrite)
     {
         BluetoothGattCharacteristic characteristic = null;
 
         try
         {
             BluetoothGattService service = mBleService.getGatt().getService(Consts.UUID_SERVICE);
-            characteristic = service.getCharacteristic(Consts.UUID_CHARACTERISTIC);
+            characteristic = service.getCharacteristic(characteristicUuid);
         }
         catch (Exception e)
         {
@@ -81,14 +82,14 @@ public class BleManager
         mQueue.addToQueue(mQueueItem);
     }
 
-    public void setCharacteristicNotificationQueue(boolean enabled)
+    public void setCharacteristicNotificationQueue(UUID characteristicUuid, boolean enabled)
     {
         BluetoothGattCharacteristic characteristic = null;
 
         try
         {
             BluetoothGattService service = mBleService.getGatt().getService(Consts.UUID_SERVICE);
-            characteristic = service.getCharacteristic(Consts.UUID_NOTIFICATION);
+            characteristic = service.getCharacteristic(characteristicUuid);
         }
         catch (Exception e)
         {
@@ -204,7 +205,7 @@ public class BleManager
         command.setData(new byte[0]);
 
         // Send APDU Packet
-        transmitApduPacket(command);
+        transmitApduPacket(Consts.UUID_CHARACTERISTIC_CLEXI_REQUEST, command);
     }
 
     public boolean readRemoteRssi()
@@ -258,7 +259,8 @@ public class BleManager
 
         // Set Characteristic Notification
         // `enable` equals to true by default
-        setCharacteristicNotificationQueue(true);
+        setCharacteristicNotificationQueue(Consts.UUID_CHARACTERISTIC_CLEXI_RESPONSE, true);
+        setCharacteristicNotificationQueue(Consts.UUID_CHARACTERISTIC_CLEXI_EVENT, true);
     }
 
     public void onCharacteristicChanged(byte[] data)
@@ -295,12 +297,12 @@ public class BleManager
      * Transmit data
      ***************************************************/
 
-    private void transmitApduPacket(ApduCommand packet)
+    public void transmitApduPacket(UUID characteristicUuid, ApduCommand packet)
     {
-        transmitApduData(packet.pushTo());
+        transmitApduData(characteristicUuid, packet.pushTo());
     }
 
-    private void transmitApduData(byte[] data)
+    private void transmitApduData(UUID characteristicUuid, byte[] data)
     {
         // Making BLE Packets
         int                  totalPackets = BlePacket.calcTotalPacket(data.length);
@@ -340,18 +342,18 @@ public class BleManager
         // Send BLE Packets
         for (BlePacket packet : blePackets)
         {
-            transmitBlePacket(packet);
+            transmitBlePacket(characteristicUuid, packet);
         }
     }
 
-    private void transmitBlePacket(BlePacket packet)
+    private void transmitBlePacket(UUID characteristicUuid, BlePacket packet)
     {
-        transmitBlePacketData(packet.pushTo());
+        transmitBlePacketData(characteristicUuid, packet.pushTo());
     }
 
-    private void transmitBlePacketData(byte[] data)
+    public void transmitBlePacketData(UUID characteristicUuid, byte[] data)
     {
-        writeCharacteristicQueue(data);
+        writeCharacteristicQueue(characteristicUuid, data);
     }
 
     /****************************************************
@@ -396,15 +398,22 @@ public class BleManager
 
                 if (command.getIns() == Consts.EVENT_SINGLE_CLICK)
                 {
-                    // Standard Click
-                    Log.d(TAG, "Standard Click");
+                    // Single Click
+                    Log.d(TAG, "Single Click");
 
                     Broadcaster.broadcastKey(App.getAppContext(), Consts.KEY_A);
                 }
-                else if (command.getIns() == Consts.EVENT_DOUBLE_CLICK)
+                else if (command.getIns() == Consts.EVENT_LONG_CLICK)
                 {
                     // Long Click
                     Log.d(TAG, "Long Click");
+
+                    Broadcaster.broadcastKey(App.getAppContext(), Consts.KEY_B);
+                }
+                else if (command.getIns() == Consts.EVENT_DOUBLE_CLICK)
+                {
+                    // Double Click
+                    Log.d(TAG, "Double Click");
 
                     Broadcaster.broadcastKey(App.getAppContext(), Consts.KEY_B);
                 }
