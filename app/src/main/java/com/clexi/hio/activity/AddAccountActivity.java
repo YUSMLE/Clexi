@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+
+import com.clexi.hio.helper.BitmapHelper;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import androidx.appcompat.app.ActionBar;
@@ -542,7 +544,8 @@ public class AddAccountActivity extends BaseActivity
                     Drawable appIconSmall = new BitmapDrawable(
                             getResources(),
                             Bitmap.createScaledBitmap(
-                                    ((BitmapDrawable) appIcon).getBitmap(),
+                                    //((BitmapDrawable) appIcon).getBitmap(),
+                                    BitmapHelper.getBitmapFromDrawable(appIcon),
                                     ScreenHelper.convertToPixels(getApplicationContext(), 24),
                                     ScreenHelper.convertToPixels(getApplicationContext(), 24),
                                     true

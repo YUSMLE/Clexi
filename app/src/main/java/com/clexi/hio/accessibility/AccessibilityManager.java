@@ -77,8 +77,14 @@ public class AccessibilityManager extends AccessibilityService
         {
             Log.d(TAG, "AccessibilityEvent: TYPE_WINDOW_STATE_CHANGED");
 
+            if (getRootInActiveWindow() == null || getRootInActiveWindow().getPackageName() == null)
+            {
+                // It's the gap between windows!
+                return;
+            }
+
             // Check if this TYPE_WINDOW_STATE_CHANGED event is refers to our app.
-            if (getRootInActiveWindow().getPackageName().equals("com.clexi.clexi"))
+            if (getRootInActiveWindow().getPackageName().equals("com.clexi.hio"))
             {
                 // Give up, it's me :)
                 Log.d(TAG, "PackageName of event reffers to our app.");
