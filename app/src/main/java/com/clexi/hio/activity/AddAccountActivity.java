@@ -490,7 +490,8 @@ public class AddAccountActivity extends BaseActivity
                 Drawable appIconSmall = new BitmapDrawable(
                         getResources(),
                         Bitmap.createScaledBitmap(
-                                ((BitmapDrawable) appIcon).getBitmap(),
+                                //((BitmapDrawable) appIcon).getBitmap(),
+                                BitmapHelper.getBitmapFromDrawable(appIcon),
                                 ScreenHelper.convertToPixels(getApplicationContext(), 24),
                                 ScreenHelper.convertToPixels(getApplicationContext(), 24),
                                 true
