@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.clexi.clexi">
+          package="com.clexi.hio">
 
     <!-- DRAW OVERLAY PERMISSION -->
     <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW"/>
@@ -15,7 +15,7 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
 
     <application
-        android:name=".app.App"
+        android:name="com.clexi.hio.app.App"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -23,7 +23,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".activity.MainActivity"
+            android:name="com.clexi.hio.activity.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -33,40 +33,40 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.SearchForLoginActivity"
+            android:name="com.clexi.hio.activity.SearchForLoginActivity"
             android:label="@string/title_activity_search_for_login"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".activity.AccountDetailsActivity"
+            android:name="com.clexi.hio.activity.AccountDetailsActivity"
             android:label="@string/title_activity_account_details"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".activity.AddAccountActivity"
+            android:name="com.clexi.hio.activity.AddAccountActivity"
             android:label="@string/title_activity_add_account"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".activity.AppChooserActivity"
+            android:name="com.clexi.hio.activity.AppChooserActivity"
             android:label="@string/title_activity_app_chooser"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".activity.PasswordGeneratorActivity"
+            android:name="com.clexi.hio.activity.PasswordGeneratorActivity"
             android:label="@string/title_activity_password_generator"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
         <activity
-            android:name=".activity.ConnectionSettingsActivity"
+            android:name="com.clexi.hio.activity.ConnectionSettingsActivity"
             android:label="@string/title_activity_connection_settings"
             android:theme="@style/AppTheme.NoActionBar">
         </activity>
 
-        <service android:name=".bluetoothle.BleService"/>
+        <service android:name="com.clexi.hio.bluetoothle.BleService"/>
 
         <service
-            android:name=".accessibility.AccessibilityManager"
+            android:name="com.clexi.hio.accessibility.AccessibilityManager"
             android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService"/>
@@ -78,16 +78,16 @@
         </service>
 
         <service
-            android:name=".dialog.AccountsDialog"
+            android:name="com.clexi.hio.dialog.AccountsDialog"
             android:exported="true"/>
 
         <service
-            android:name=".dialog.FlyingFOB"
+            android:name="com.clexi.hio.dialog.FlyingFOB"
             android:exported="true"/>
 
         <meta-data
             android:name="DATABASE"
-            android:value="clexi_sugar_v01.db"/>
+            android:value="hio_sugar_v01.db"/>
         <meta-data
             android:name="VERSION"
             android:value="1"/>
@@ -96,7 +96,7 @@
             android:value="true"/>
         <meta-data
             android:name="DOMAIN_PACKAGE_NAME"
-            android:value="com.clexi.clexi.model.object"/>
+            android:value="com.clexi.hio.model.object"/>
 
         <provider
             android:name="br.com.mauker.materialsearchview.db.HistoryProvider"

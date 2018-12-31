@@ -1,6 +1,6 @@
 <resources>
     <!-- General -->
-    <string name="app_name">Clexi</string>
+    <string name="app_name">HIO</string>
     <string name="action_settings">Settings</string>
 
     <!-- Activity Titles -->
@@ -13,7 +13,7 @@
     <string name="title_activity_password_generator">Generate Password</string>
     <string name="title_activity_connection_settings">Connection Settings</string>
 
-    <!-- Controlls -->
+    <!-- Controls -->
     <string name="positive">OK</string>
     <string name="negative">Cancel</string>
     <string name="cancel">Cancel</string>
