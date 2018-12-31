@@ -2,11 +2,6 @@ package com.clexi.clexi.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import androidx.appcompat.app.ActionBar;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -23,10 +18,14 @@ import com.clexi.clexi.model.object.Account;
 import com.clexi.clexi.test.TestCommands;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetBuilder;
 import com.github.rubensousa.bottomsheetbuilder.BottomSheetMenuDialog;
-import com.github.rubensousa.bottomsheetbuilder.adapter.BottomSheetItemClickListener;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -226,7 +225,7 @@ public class MainActivity extends BaseActivity
                 ApduCommand command = TestCommands.requestBatteryLevel();
                 if (BleManager.getInstance().isConnected())
                 {
-                    BleManager.getInstance().transmitBlePacketData(com.clexi.clexi.bluetoothle.Consts.UUID_CHARACTERISTIC_CLEXI_REQUEST, new byte[] {
+                    BleManager.getInstance().transmitBlePacketData(com.clexi.clexi.bluetoothle.Consts.UUID_CHARACTERISTIC_CLEXI_REQUEST, new byte[]{
                             (byte) 0xC0,
                             (byte) 0x00,
                             (byte) 0x00,
@@ -306,48 +305,44 @@ public class MainActivity extends BaseActivity
         BottomSheetMenuDialog dialog = new BottomSheetBuilder(this, R.style.AppTheme_BottomSheetDialog)
                 .setMode(BottomSheetBuilder.MODE_LIST)
                 .setMenu(R.menu.menu_account)
-                .setItemClickListener(new BottomSheetItemClickListener()
+                .setItemClickListener(item ->
                 {
-                    @Override
-                    public void onBottomSheetItemClick(final MenuItem item)
+                    if (item.getItemId() == R.id.menu_details)
                     {
-                        if (item.getItemId() == R.id.menu_details)
+                        // Go to AccountDetailsActivity
+                        goToViewAccount(account.getId());
+                    }
+                    else if (item.getItemId() == R.id.menu_edit)
+                    {
+                        // Go to AddAccountActivity for edit
+                        goToEditAccount(account.getId());
+                    }
+                    else if (item.getItemId() == R.id.menu_delete)
+                    {
+                        new ConfirmDialog().setListener(new ConfirmDialog.DialogListener()
                         {
-                            // Go to AccountDetailsActivity
-                            goToViewAccount(account.getId());
-                        }
-                        else if (item.getItemId() == R.id.menu_edit)
-                        {
-                            // Go to AddAccountActivity for edit
-                            goToEditAccount(account.getId());
-                        }
-                        else if (item.getItemId() == R.id.menu_delete)
-                        {
-                            new ConfirmDialog().setListener(new ConfirmDialog.DialogListener()
+                            @Override
+                            public void onPositiveButtonClicked()
                             {
-                                @Override
-                                public void onPositiveButtonClicked()
-                                {
-                                    // OK, delete the Account
-                                    DbManager.deleteAccount(account);
-                                    mAccounts.remove(account);
+                                // OK, delete the Account
+                                DbManager.deleteAccount(account);
+                                mAccounts.remove(account);
 
-                                    // Update list with dataset to show
-                                    // todo later...
+                                // Update list with dataset to show
+                                // todo later...
 
-                                    mAccountsAdapter.updateList(mAccounts);
-                                    mAccountsAdapter.notifyDataSetChanged();
-                                }
+                                mAccountsAdapter.updateList(mAccounts);
+                                mAccountsAdapter.notifyDataSetChanged();
+                            }
 
-                                @Override
-                                public void onNegativeButtonClicked()
-                                {
-                                    // Nothing
-                                }
-                            })
-                                    .setMessage(String.format(getString(R.string.confirm_delete_account), account.getTitle()))
-                                    .show(getFragmentManager(), "");
-                        }
+                            @Override
+                            public void onNegativeButtonClicked()
+                            {
+                                // Nothing
+                            }
+                        })
+                                .setMessage(String.format(getString(R.string.confirm_delete_account), account.getTitle()))
+                                .show(getFragmentManager(), "");
                     }
                 })
                 .createDialog();

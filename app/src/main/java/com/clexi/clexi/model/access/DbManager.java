@@ -65,6 +65,22 @@ public class DbManager
                 "This is an important credential."
         ));
         DbManager.createAccount(new Account(
+                "Reyhoon",
+                "com.reyhoon",
+                "reyhoon.com",
+                "09168793241",
+                "reyhoon",
+                "This is an important credential."
+        ));
+        DbManager.createAccount(new Account(
+                "Reyhoon",
+                "com.reyhoon",
+                "reyhoon.com",
+                "09168793242",
+                "reyhoon",
+                "This is an important credential."
+        ));
+        DbManager.createAccount(new Account(
                 "Digikala",
                 "com.digikala",
                 "digikala.com",

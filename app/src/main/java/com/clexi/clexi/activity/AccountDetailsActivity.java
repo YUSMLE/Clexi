@@ -114,7 +114,7 @@ public class AccountDetailsActivity extends BaseActivity
                 }
                 else if (isShow)
                 {
-                    collapsingToolbar.setTitle(" "); // carefull there should a space between double quote otherwise it wont work
+                    collapsingToolbar.setTitle(" "); // Be careful, there should a space between double quote otherwise it wont work.
                     isShow = false;
                 }
             }
