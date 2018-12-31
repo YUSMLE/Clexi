@@ -224,7 +224,7 @@ public class AccountsDialog extends Service
                         getApplicationContext(),
                         (mAccounts == null || mAccounts.size() == 0) ? 200 : 300
                 ),
-                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT
         );
