@@ -2,7 +2,7 @@ package com.clexi.clexi.bluetoothle;
 
 import android.bluetooth.le.ScanResult;
 import android.os.Build;
-import android.support.annotation.RequiresApi;
+import androidx.annotation.RequiresApi;
 import android.util.Log;
 
 import com.clexi.clexi.app.App;

@@ -12,6 +12,9 @@ import android.content.Intent;
 import android.util.Log;
 
 import com.clexi.clexi.app.App;
+import com.clexi.clexi.crypto.Converter;
+
+import java.util.UUID;
 
 /**
  * Created by Yousef on 8/23/2017.
@@ -73,6 +76,22 @@ public class GattCallback extends BluetoothGattCallback
     public void onCharacteristicChanged(BluetoothGatt gatt, BluetoothGattCharacteristic characteristic)
     {
         Log.d(TAG, "onCharacteristicChanged()");
+
+        // TEST
+        UUID uuid = characteristic.getUuid();
+        if (uuid.equals(Consts.UUID_CHARACTERISTIC_CLEXI_RESPONSE))
+        {
+            Log.d(TAG, "CHARACTERISTIC CLEXI RESPONSE:");
+        }
+        else if (uuid.equals(Consts.UUID_CHARACTERISTIC_CLEXI_EVENT))
+        {
+            Log.d(TAG, "CHARACTERISTIC CLEXI EVENT:");
+        }
+        else
+        {
+            Log.d(TAG, "UNKNOWN CHARACTERISTIC:");
+        }
+        Log.d(TAG, "VALUE: " + Converter.encodeToHexadecimal(characteristic.getValue()));
 
         Broadcaster.broadcastGattCallback(App.getAppContext(), Consts.ACTION_GATT_CHARACTERISTIC_CHANGED, characteristic.getValue());
     }

@@ -78,7 +78,7 @@ public class AccessibilityManager extends AccessibilityService
         {
             Log.d(TAG, "AccessibilityEvent: TYPE_WINDOW_STATE_CHANGED");
 
-            // Check if this TYPE_WINDOW_STATE_CHANGED event is reffers to our app.
+            // Check if this TYPE_WINDOW_STATE_CHANGED event is refers to our app.
             if (getRootInActiveWindow().getPackageName().equals("com.clexi.clexi"))
             {
                 // Give up, it's me :)

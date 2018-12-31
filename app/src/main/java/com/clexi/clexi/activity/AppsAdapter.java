@@ -1,7 +1,7 @@
-package com.clexi.clexi.dialog;
+package com.clexi.clexi.activity;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
-import android.graphics.drawable.Drawable;
 import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,11 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.amulyakhare.textdrawable.TextDrawable;
-import com.amulyakhare.textdrawable.util.ColorGenerator;
 import com.clexi.clexi.R;
-import com.clexi.clexi.helper.PackageManagerHelper;
-import com.clexi.clexi.model.object.Account;
 import com.clexi.clexi.model.object.AppInfo;
 
 import java.util.List;
@@ -22,19 +18,19 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 
 /**
- * Created by Yousef on 2/28/2017.
+ * Created by Yousef on 5/30/2017.
  */
 
-public class AccountsDialogAdapter extends RecyclerView.Adapter<AccountsDialogAdapter.ViewHolder>
+public class AppsAdapter extends RecyclerView.Adapter<AppsAdapter.ViewHolder>
 {
-    public static final String TAG = AccountsDialogAdapter.class.getSimpleName();
+    public static final String TAG = AppsAdapter.class.getSimpleName();
 
-    private Context       mContext;
-    private List<Account> mDataset;
-    private Callback      mCallback;
+    private Context              mContext;
+    private List<AppInfo>        mDataset;
+    private AppsAdapter.Callback mCallback;
 
     // Provide a suitable constructor (depends on the kind of dataset)
-    public AccountsDialogAdapter(Context context, List<Account> dataset, Callback callback)
+    public AppsAdapter(Context context, List<AppInfo> dataset, AppsAdapter.Callback callback)
     {
         mContext = context;
         mDataset = dataset;
@@ -43,30 +39,29 @@ public class AccountsDialogAdapter extends RecyclerView.Adapter<AccountsDialogAd
 
     // Create new views (invoked by the layout manager)
     @Override
-    public AccountsDialogAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
+    public AppsAdapter.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType)
     {
         // create a new view
-        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_account, parent, false);
+        View v = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_app, parent, false);
 
         // set the view's size, margins, paddings and layout parameters
-        // Nothing
+        //...
 
-        ViewHolder vh = new ViewHolder(v);
+        AppsAdapter.ViewHolder vh = new AppsAdapter.ViewHolder(v);
         return vh;
     }
 
     // Replace the contents of a view (invoked by the layout manager)
     @Override
-    public void onBindViewHolder(final ViewHolder holder, final int position)
+    public void onBindViewHolder(final AppsAdapter.ViewHolder holder, final int position)
     {
-        final Account item = mDataset.get(position);
+        final AppInfo item = mDataset.get(position);
         // - get element from your dataset at this position
         // - replace the contents of the view with that element
 
         // init views
-        holder.title.setText(item.getUsername()); // !! :)
-        holder.username.setText(item.getTitle()); // !! :)
-        holder.icon.setImageDrawable(getIcon(item.getTitle(), item.getAppId()));
+        holder.title.setText(item.appName);
+        holder.icon.setImageDrawable(item.icon);
 
         holder.rootLayout.setOnClickListener(new View.OnClickListener()
         {
@@ -78,7 +73,7 @@ public class AccountsDialogAdapter extends RecyclerView.Adapter<AccountsDialogAd
         });
     }
 
-    private void doSomething(Account item)
+    private void doSomething(AppInfo item)
     {
         mCallback.onSelect(item);
     }
@@ -90,13 +85,13 @@ public class AccountsDialogAdapter extends RecyclerView.Adapter<AccountsDialogAd
         return mDataset.size();
     }
 
-    public void add(Account item, int position)
+    public void add(AppInfo item, int position)
     {
         mDataset.add(position, item);
         notifyItemInserted(position);
     }
 
-    public void remove(Account item)
+    public void remove(BluetoothDevice item)
     {
         int position = mDataset.indexOf(item);
         mDataset.remove(position);
@@ -114,8 +109,6 @@ public class AccountsDialogAdapter extends RecyclerView.Adapter<AccountsDialogAd
         ViewGroup rootLayout;
         @BindView(R.id.title)
         TextView  title;
-        @BindView(R.id.username)
-        TextView  username;
         @BindView(R.id.icon)
         ImageView icon;
 
@@ -128,7 +121,7 @@ public class AccountsDialogAdapter extends RecyclerView.Adapter<AccountsDialogAd
             ButterKnife.bind(this, view);
 
             // statics
-            // Nothing
+            //...
         }
     }
 
@@ -137,34 +130,15 @@ public class AccountsDialogAdapter extends RecyclerView.Adapter<AccountsDialogAd
      */
     interface Callback
     {
-        void onSelect(Account item);
+        void onSelect(AppInfo item);
     }
 
     /**
-     * Icon
+     * Update
      */
-    private Drawable getIcon(String title, String appId)
+    public void updateList(List<AppInfo> fDataset)
     {
-        AppInfo appInfo = PackageManagerHelper.getAppInfo(mContext, appId);
-
-        if (appInfo != null)
-        {
-            Drawable appIcon = PackageManagerHelper.getAppInfo(mContext, appInfo.packageName).icon;
-
-            return appIcon;
-        }
-        else
-        {
-            // using TextDrawable library for generating custom icon
-            ColorGenerator colorGenerator;
-            TextDrawable   textDrawable;
-
-            colorGenerator = ColorGenerator.MATERIAL;
-            textDrawable = TextDrawable.builder()
-                    .beginConfig().toUpperCase().endConfig()
-                    .buildRound(title.substring(0, 2), colorGenerator.getColor(title));
-
-            return textDrawable;
-        }
+        mDataset = fDataset;
+        notifyDataSetChanged();
     }
 }

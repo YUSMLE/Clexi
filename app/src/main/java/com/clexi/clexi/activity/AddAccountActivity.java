@@ -6,11 +6,11 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
-import android.support.design.widget.TextInputLayout;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.AppCompatEditText;
-import android.support.v7.widget.Toolbar;
+import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.AppCompatEditText;
+import androidx.appcompat.widget.Toolbar;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
@@ -416,7 +416,7 @@ public class AddAccountActivity extends BaseActivity
             public void onClick(View v)
             {
                 Intent intent = new Intent(AddAccountActivity.this, AppChooserActivity.class);
-                startActivityForResult(intent, 4231);
+                startActivityForResult(intent, Consts.REQUEST_CHOOSE_APPLICATION);
             }
         });
 
@@ -426,7 +426,7 @@ public class AddAccountActivity extends BaseActivity
             public void onClick(View v)
             {
                 Intent intent = new Intent(AddAccountActivity.this, AppChooserActivity.class);
-                startActivityForResult(intent, 4231);
+                startActivityForResult(intent, Consts.REQUEST_CHOOSE_APPLICATION);
             }
         });
 
@@ -436,7 +436,7 @@ public class AddAccountActivity extends BaseActivity
             public void onClick(View v)
             {
                 Intent i = new Intent(AddAccountActivity.this, PasswordGeneratorActivity.class);
-                startActivityForResult(i, 1234);
+                startActivityForResult(i, Consts.REQUEST_GENERATE_PASSWORD);
             }
         });
 

@@ -90,7 +90,9 @@ public class Utils
                     }
                     catch (MalformedURLException e)
                     {
-                        if (e.toString().contains("Protocol not found"))
+                        e.printStackTrace();
+
+                        if (e.toString().contains("protocol"))
                         {
                             try
                             {

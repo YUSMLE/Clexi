@@ -5,8 +5,8 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.PixelFormat;
 import android.os.IBinder;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -18,7 +18,6 @@ import android.widget.TextView;
 
 import com.clexi.clexi.R;
 import com.clexi.clexi.activity.AddAccountActivity;
-import com.clexi.clexi.activity.MainActivity;
 import com.clexi.clexi.activity.SearchForLoginActivity;
 import com.clexi.clexi.app.Consts;
 import com.clexi.clexi.helper.Broadcaster;
@@ -225,7 +224,7 @@ public class AccountsDialog extends Service
                         getApplicationContext(),
                         (mAccounts == null || mAccounts.size() == 0) ? 200 : 300
                 ),
-                WindowManager.LayoutParams.TYPE_PHONE,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
                 PixelFormat.TRANSLUCENT
         );
