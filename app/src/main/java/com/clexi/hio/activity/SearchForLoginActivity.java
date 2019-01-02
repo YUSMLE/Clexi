@@ -249,16 +249,12 @@ public class SearchForLoginActivity extends BaseActivity
         /* Data Binding */
 
         // MaterialSearchView; If you want to submit the query from the selected suggestion
-        mSearchView.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        mSearchView.setOnItemClickListener((parent, view, position, id) ->
         {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
-                // Do something when the suggestion list is clicked.
-                String suggestion = mSearchView.getSuggestionAtPosition(position);
+            // Do something when the suggestion list is clicked.
+            String suggestion = mSearchView.getSuggestionAtPosition(position);
 
-                mSearchView.setQuery(suggestion, true);
-            }
+            mSearchView.setQuery(suggestion, true);
         });
         // MaterialSearchView; handle either QueryTextChange or QueryTextSubmit events inside the MaterialSearchView
         mSearchView.setOnQueryTextListener(new MaterialSearchView.OnQueryTextListener()
@@ -293,14 +289,7 @@ public class SearchForLoginActivity extends BaseActivity
             }
         });
         // MaterialSearchView; handle click event on voice icon
-        mSearchView.setOnVoiceClickedListener(new MaterialSearchView.OnVoiceClickedListener()
-        {
-            @Override
-            public void onVoiceClicked()
-            {
-                Log.d(TAG, "Try to voice search...");
-            }
-        });
+        mSearchView.setOnVoiceClickedListener(() -> Log.d(TAG, "Try to voice search..."));
         // MaterialSearchView; provide search suggestions
         mSearchView.addSuggestions(getResources().getStringArray(R.array.query_suggestions));
         // MaterialSearchView; customize view
@@ -311,58 +300,54 @@ public class SearchForLoginActivity extends BaseActivity
 
         mAccounts = DbManager.listAllAccounts();
 
-        AccountsAdapter.Callback callback = new AccountsAdapter.Callback()
+        AccountsAdapter.Callback callback = item ->
         {
-            @Override
-            public void onSelect(final Account item)
+            // Cache it for login
+            // todo later...
+
+            new ConfirmDialog().setListener(new ConfirmDialog.DialogListener()
             {
-                // Cache it for login
-                // todo later...
-
-                new ConfirmDialog().setListener(new ConfirmDialog.DialogListener()
+                @Override
+                public void onPositiveButtonClicked()
                 {
-                    @Override
-                    public void onPositiveButtonClicked()
+                    // Update account
+                    if (mIsBrowser)
                     {
-                        // Update account
-                        if (mIsBrowser)
-                        {
-                            // Update url of account
-                            item.setUrl(mCurrentUrl);
-                        }
-                        else
-                        {
-                            // Update appId of account
-                            item.setAppId(mActiveApp);
-                        }
-
-                        // Update database
-                        DbManager.updateAccount(item);
-
-                        // TEST
-                        CacheManager.cacheLogin(item.getId());
-
-                        // Finish activity if saving item (create/update) is done.
-                        setResult(Activity.RESULT_OK);
-                        finish();
+                        // Update url of account
+                        item.setUrl(mCurrentUrl);
+                    }
+                    else
+                    {
+                        // Update appId of account
+                        item.setAppId(mActiveApp);
                     }
 
-                    @Override
-                    public void onNegativeButtonClicked()
-                    {
-                        // Nothing
-                    }
-                })
-                        .setMessage(String.format(getString(R.string.confirm_assign_account), item.getTitle()))
-                        .show(getFragmentManager(), "");
-            }
+                    // Update database
+                    DbManager.updateAccount(item);
+
+                    // TEST
+                    CacheManager.cacheLogin(item.getId());
+
+                    // Finish activity if saving item (create/update) is done.
+                    setResult(Activity.RESULT_OK);
+                    finish();
+                }
+
+                @Override
+                public void onNegativeButtonClicked()
+                {
+                    // Nothing
+                }
+            })
+                    .setMessage(String.format(getString(R.string.confirm_assign_account), item.getTitle()))
+                    .show(getFragmentManager(), "");
         };
 
         mAccountsAdapter = new AccountsAdapter(SearchForLoginActivity.this, mAccounts, callback);
         mAccountList.setAdapter(mAccountsAdapter);
 
-        LinearLayoutManager verticalLayoutManagaer = new LinearLayoutManager(SearchForLoginActivity.this, LinearLayoutManager.VERTICAL, false);
-        mAccountList.setLayoutManager(verticalLayoutManagaer);
+        LinearLayoutManager verticalLayoutManager = new LinearLayoutManager(SearchForLoginActivity.this, RecyclerView.VERTICAL, false);
+        mAccountList.setLayoutManager(verticalLayoutManager);
     }
 
     /****************************************************

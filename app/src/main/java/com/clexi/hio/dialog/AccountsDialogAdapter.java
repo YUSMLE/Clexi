@@ -68,14 +68,7 @@ public class AccountsDialogAdapter extends RecyclerView.Adapter<AccountsDialogAd
         holder.username.setText(item.getTitle()); // !! :)
         holder.icon.setImageDrawable(getIcon(item.getTitle(), item.getAppId()));
 
-        holder.rootLayout.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                doSomething(item);
-            }
-        });
+        holder.rootLayout.setOnClickListener(v -> doSomething(item));
     }
 
     private void doSomething(Account item)

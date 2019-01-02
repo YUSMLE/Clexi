@@ -273,7 +273,7 @@ public class AccessibilityManager extends AccessibilityService
                     mFields.add(node);
 
                     // DEBUG
-                    Log.e(TAG, "Find EditText with text: " + Utils.getTextOfNode(node));
+                    Log.e(TAG, String.format("EditText with text `%s` found.", Utils.getTextOfNode(node)));
 
                     // Is this a password field although?!
                     if (node.isPassword())
@@ -505,6 +505,11 @@ public class AccessibilityManager extends AccessibilityService
                     // Retrieve chosen account from intent
                     Account account = intent.getExtras().getParcelable(Consts.ACCOUNT);
 
+                    // DEBUG
+                    Log.w(TAG, "account: " + account.getUrl());
+                    Log.w(TAG, "account: " + account.getUsername());
+                    Log.w(TAG, "account: " + account.getPassword());
+
                     if (mUsernameField != null && mPasswordField != null)
                     {
                         Log.d(TAG, "ACTION_LOGIN_FIRE: " + "We have both username and password fields.");
@@ -521,7 +526,6 @@ public class AccessibilityManager extends AccessibilityService
                         // TEST
                         setField(mUsernameField, account.getUsername());
                         setField(mPasswordField, account.getPassword());
-                        Log.e(TAG, "Text of password field: " + Utils.getTextOfNode(mPasswordField));
                     }
                     else if (mUsernameField != null)
                     {

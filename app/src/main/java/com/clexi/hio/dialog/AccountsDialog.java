@@ -158,33 +158,22 @@ public class AccountsDialog extends Service
 
         // close button
         mCloseButton = (Button) mRootView.findViewById(R.id.closeButton);
-        mCloseButton.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                destroyService();
-            }
-        });
+        mCloseButton.setOnClickListener(v -> destroyService());
 
         // search button
         mSearchButton = (Button) mRootView.findViewById(R.id.searchButton);
-        mSearchButton.setOnClickListener(new View.OnClickListener()
+        mSearchButton.setOnClickListener(v ->
         {
-            @Override
-            public void onClick(View v)
-            {
-                Intent i = new Intent(getApplicationContext(), SearchForLoginActivity.class);
+            Intent i = new Intent(getApplicationContext(), SearchForLoginActivity.class);
 
-                i.putExtra(Consts.ACTIVE_APP, mActiveApp);
-                i.putExtra(Consts.IS_BROWSER, mIsBrowser);
-                i.putExtra(Consts.CURRENT_URL, mCurrentUrl);
+            i.putExtra(Consts.ACTIVE_APP, mActiveApp);
+            i.putExtra(Consts.IS_BROWSER, mIsBrowser);
+            i.putExtra(Consts.CURRENT_URL, mCurrentUrl);
 
-                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
-                startActivity(i);
+            i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_MULTIPLE_TASK);
+            startActivity(i);
 
-                destroyService();
-            }
+            destroyService();
         });
 
         // new button

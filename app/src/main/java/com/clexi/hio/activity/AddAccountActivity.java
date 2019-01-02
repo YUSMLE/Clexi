@@ -339,124 +339,104 @@ public class AddAccountActivity extends BaseActivity
         // Other Defaults
         app.setKeyListener(null);
 
-        actionSave.setOnClickListener(new View.OnClickListener()
+        actionSave.setOnClickListener(v ->
         {
-            @Override
-            public void onClick(View v)
+            if (!checkValidation())
             {
-                if (!checkValidation())
-                {
-                    // Some of values are not valid.
-                    // Error messages will be handled by InputLayout.
-                    return;
-                }
+                // Some of values are not valid.
+                // Error messages will be handled by InputLayout.
+                return;
+            }
 
-                if (mActivityType.equals(ACTIVITY_TYPE_ADD))
-                {
-                    // Create the new item
-                    mAccount = new Account(
-                            title.getText().toString(),
-                            mChoosenApp,
-                            url.getText().toString(),
-                            username.getText().toString(),
-                            password.getText().toString(),
-                            note.getText().toString()
-                    );
+            if (mActivityType.equals(ACTIVITY_TYPE_ADD))
+            {
+                // Create the new item
+                mAccount = new Account(
+                        title.getText().toString(),
+                        mChoosenApp,
+                        url.getText().toString(),
+                        username.getText().toString(),
+                        password.getText().toString(),
+                        note.getText().toString()
+                );
 
-                    DbManager.createAccount(mAccount);
+                DbManager.createAccount(mAccount);
 
-                    // Finish activity if saving item (create/update) is done.
-                    setResult(Activity.RESULT_OK);
-                    finish();
-                }
-                else if (mActivityType.equals(ACTIVITY_TYPE_EDIT))
-                {
-                    // Update the item
-                    mAccount.setTitle(title.getText().toString());
-                    mAccount.setAppId(mChoosenApp);
-                    mAccount.setUrl(url.getText().toString());
-                    mAccount.setUsername(username.getText().toString());
-                    mAccount.setPassword(password.getText().toString());
-                    mAccount.setNote(note.getText().toString());
+                // Finish activity if saving item (create/update) is done.
+                setResult(Activity.RESULT_OK);
+                finish();
+            }
+            else if (mActivityType.equals(ACTIVITY_TYPE_EDIT))
+            {
+                // Update the item
+                mAccount.setTitle(title.getText().toString());
+                mAccount.setAppId(mChoosenApp);
+                mAccount.setUrl(url.getText().toString());
+                mAccount.setUsername(username.getText().toString());
+                mAccount.setPassword(password.getText().toString());
+                mAccount.setNote(note.getText().toString());
 
-                    DbManager.updateAccount(mAccount);
+                DbManager.updateAccount(mAccount);
 
-                    // Finish activity if saving item (create/update) is done.
-                    setResult(Activity.RESULT_OK);
-                    finish();
-                }
-                else if (mActivityType.equals(ACTIVITY_TYPE_ADD_FOR_LOGIN))
-                {
-                    // Create the new item
-                    mAccount = new Account(
-                            title.getText().toString(),
-                            mChoosenApp,
-                            url.getText().toString(),
-                            username.getText().toString(),
-                            password.getText().toString(),
-                            note.getText().toString()
-                    );
+                // Finish activity if saving item (create/update) is done.
+                setResult(Activity.RESULT_OK);
+                finish();
+            }
+            else if (mActivityType.equals(ACTIVITY_TYPE_ADD_FOR_LOGIN))
+            {
+                // Create the new item
+                mAccount = new Account(
+                        title.getText().toString(),
+                        mChoosenApp,
+                        url.getText().toString(),
+                        username.getText().toString(),
+                        password.getText().toString(),
+                        note.getText().toString()
+                );
 
-                    DbManager.createAccount(mAccount);
+                DbManager.createAccount(mAccount);
 
-                    // Cache it for login
-                    // todo later...
+                // Cache it for login
+                // todo later...
 
-                    // TEST
-                    CacheManager.cacheLogin(mAccount.getId());
+                // TEST
+                CacheManager.cacheLogin(mAccount.getId());
 
-                    // Finish activity if saving item (create/update) is done.
-                    setResult(Activity.RESULT_OK);
-                    finish();
-                }
+                // Finish activity if saving item (create/update) is done.
+                setResult(Activity.RESULT_OK);
+                finish();
             }
         });
 
-        app.setOnClickListener(new View.OnClickListener()
+        app.setOnClickListener(v ->
         {
-            @Override
-            public void onClick(View v)
-            {
-                Intent intent = new Intent(AddAccountActivity.this, AppChooserActivity.class);
-                startActivityForResult(intent, Consts.REQUEST_CHOOSE_APPLICATION);
-            }
+            Intent intent = new Intent(AddAccountActivity.this, AppChooserActivity.class);
+            startActivityForResult(intent, Consts.REQUEST_CHOOSE_APPLICATION);
         });
 
-        appChooser.setOnClickListener(new View.OnClickListener()
+        appChooser.setOnClickListener(v ->
         {
-            @Override
-            public void onClick(View v)
-            {
-                Intent intent = new Intent(AddAccountActivity.this, AppChooserActivity.class);
-                startActivityForResult(intent, Consts.REQUEST_CHOOSE_APPLICATION);
-            }
+            Intent intent = new Intent(AddAccountActivity.this, AppChooserActivity.class);
+            startActivityForResult(intent, Consts.REQUEST_CHOOSE_APPLICATION);
         });
 
-        passwordGenerator.setOnClickListener(new View.OnClickListener()
+        passwordGenerator.setOnClickListener(v ->
         {
-            @Override
-            public void onClick(View v)
-            {
-                Intent i = new Intent(AddAccountActivity.this, PasswordGeneratorActivity.class);
-                startActivityForResult(i, Consts.REQUEST_GENERATE_PASSWORD);
-            }
+            Intent i = new Intent(AddAccountActivity.this, PasswordGeneratorActivity.class);
+            startActivityForResult(i, Consts.REQUEST_GENERATE_PASSWORD);
         });
 
-        moreOptionsBtn.setOnClickListener(new View.OnClickListener()
+        moreOptionsBtn.setOnClickListener(v ->
         {
-            @Override
-            public void onClick(View v)
+            if ((int) moreOptionsBtn.getTag() == 0)
             {
-                if ((int) moreOptionsBtn.getTag() == 0)
-                {
-                    // More Options Layout is closed, so open it
-                    setMoreOptionsLayoutVisible(true);
-                }
-                else
-                {
-                    // More Options Layout is opened, so close it
-                    setMoreOptionsLayoutVisible(false);
-                }
+                // More Options Layout is closed, so open it
+                setMoreOptionsLayoutVisible(true);
+            }
+            else
+            {
+                // More Options Layout is opened, so close it
+                setMoreOptionsLayoutVisible(false);
             }
         });
     }
